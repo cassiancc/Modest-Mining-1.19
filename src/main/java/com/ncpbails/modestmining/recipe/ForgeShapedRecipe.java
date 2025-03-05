@@ -369,7 +369,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
             ItemStack itemstack = buf.readItem();
             int cookTimeIn = buf.readVarInt();
-            Ingredient fuel = Ingredient.EMPTY;
+            Ingredient fuel = Ingredient.fromNetwork(buf);
             return new ForgeShapedRecipe(width, height, id, itemstack, nonnulllist, fuel, cookTimeIn);
         }
 
@@ -383,6 +383,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
             buf.writeItem(recipe.getResultItem());
             buf.writeVarInt(recipe.cookTime);
+            recipe.fuel.toNetwork(buf);
         }
     }
 }
