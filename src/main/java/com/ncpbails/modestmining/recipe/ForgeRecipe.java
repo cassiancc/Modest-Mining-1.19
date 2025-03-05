@@ -164,7 +164,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
 
             ItemStack itemstack = buf.readItem();
             int cookTimeIn = buf.readVarInt();
-            Ingredient fuel = Ingredient.EMPTY;
+            Ingredient fuel = Ingredient.fromNetwork(buf);
             return new ForgeRecipe(id, itemstack, inputs, fuel, cookTimeIn);
         }
 
@@ -178,6 +178,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
 
             buf.writeItem(recipe.getResultItem());
             buf.writeVarInt(recipe.cookTime);
+            recipe.fuel.toNetwork(buf);
 
         }
     }
