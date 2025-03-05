@@ -155,7 +155,6 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
         }
         @Override
         public ForgeRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            String s = buf.readUtf();
             int i = buf.readVarInt();
             NonNullList<Ingredient> inputs = NonNullList.withSize(i, Ingredient.EMPTY);
 
@@ -178,6 +177,8 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
             }
 
             buf.writeItem(recipe.getResultItem());
+            buf.writeVarInt(recipe.cookTime);
+
         }
     }
 }
