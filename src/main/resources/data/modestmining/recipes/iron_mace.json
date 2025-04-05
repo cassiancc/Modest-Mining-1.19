@@ -9,7 +9,7 @@
       "item": "minecraft:iron_ingot"
     },
     "@": {
-      "item": "modestmining:iron_piece"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

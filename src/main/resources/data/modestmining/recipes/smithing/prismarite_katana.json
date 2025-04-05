@@ -4,7 +4,7 @@
     "item": "modestmining:diamond_katana"
   },
   "addition": {
-    "tag": "modestmining:prismarite_pieces"
+    "item": "modestmining:prismarite_ingot"
   },
   "result": {
     "item": "modestmining:prismarite_katana"

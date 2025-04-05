@@ -6,7 +6,7 @@
       "item": "minecraft:stick"
     },
     "#": {
-      "tag": "modestmining:gold_pieces"
+     "item": "minecraft:gold_ingot"
     }
   },
   "pattern": [

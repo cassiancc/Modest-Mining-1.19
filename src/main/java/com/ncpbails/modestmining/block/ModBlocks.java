@@ -35,14 +35,14 @@ public class ModBlocks {
     public static final RegistryObject<Block> COKE_BLOCK = registerBlock("coke_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.COAL_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, true, 64000);
 
-    public static final RegistryObject<Block> COAL_POWDER_BLOCK = registerBlock("coal_powder_block",
-            () -> new FallingBlock(BlockBehaviour.Properties.copy(Blocks.SAND)), CreativeModeTab.TAB_BUILDING_BLOCKS, true, 24000);
+    //public static final RegistryObject<Block> COAL_POWDER_BLOCK = registerBlock("coal_powder_block",
+    //        () -> new FallingBlock(BlockBehaviour.Properties.copy(Blocks.SAND)), CreativeModeTab.TAB_BUILDING_BLOCKS, true, 24000);
 
-    public static final RegistryObject<Block> STEEL_BLOCK = registerBlock("steel_block",
-            () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
+    //public static final RegistryObject<Block> STEEL_BLOCK = registerBlock("steel_block",
+    //        () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
 
-    public static final RegistryObject<Block> ROSEGOLD_BLOCK = registerBlock("rosegold_block",
-            () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
+    //public static final RegistryObject<Block> ROSEGOLD_BLOCK = registerBlock("rosegold_block",
+    //        () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> PRISMARITE_BLOCK = registerBlock("prismarite_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.NETHERITE_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
@@ -90,8 +90,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> COMPACT_AMETHYST_BLOCK = registerBlock("compact_amethyst_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
 
-    public static final RegistryObject<Block> OCEANIC_REMAINS = registerBlock("oceanic_remains",
-            () -> new Block(BlockBehaviour.Properties.copy(Blocks.ANCIENT_DEBRIS)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
+    //public static final RegistryObject<Block> OCEANIC_REMAINS = registerBlock("oceanic_remains",
+    //        () -> new Block(BlockBehaviour.Properties.copy(Blocks.ANCIENT_DEBRIS)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> DIAMOND_SHARD_BLOCK = registerBlock("diamond_shard_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.AMETHYST_BLOCK).sound(SoundType.METAL)), CreativeModeTab.TAB_BUILDING_BLOCKS, false, 0);
@@ -112,11 +112,11 @@ public class ModBlocks {
             () -> new ShellBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_LIGHT_GRAY)
                     .strength(0.5f, 0.5f)), CreativeModeTab.TAB_MISC, false, 0);
 
-    public static final RegistryObject<Block> ROCKS = registerBlock("rocks",
-            () -> new RockBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY)
-                    .strength(0.5f, 0.5f).requiresCorrectToolForDrops()), CreativeModeTab.TAB_MISC, false, 0);
+    //public static final RegistryObject<Block> ROCKS = registerBlock("rocks",
+    //        () -> new RockBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY)
+    //                .strength(0.5f, 0.5f).requiresCorrectToolForDrops()), CreativeModeTab.TAB_MISC, false, 0);
 
-    public static final RegistryObject<Block> VARIED_PLANKS = registerBlock("varied_planks",
+    /*public static final RegistryObject<Block> VARIED_PLANKS = registerBlock("varied_planks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)) {
                 @Override public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) { return true; }
                 @Override public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) { return 60; }
@@ -170,7 +170,7 @@ public class ModBlocks {
                 @Override public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) { return true; }
                 @Override public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) { return 60; }
                 @Override public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) { return 30; }
-            }, CreativeModeTab.TAB_REDSTONE, true, 300);
+            }, CreativeModeTab.TAB_REDSTONE, true, 300);*/
 
 
     public static final RegistryObject<Block> OAK_PILLAR = registerBlock("oak_pillar",

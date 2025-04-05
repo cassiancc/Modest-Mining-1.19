@@ -3,7 +3,7 @@
   "cooktime": 144,
   "key": {
     "#": {
-      "tag": "modestmining:iron_platings"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

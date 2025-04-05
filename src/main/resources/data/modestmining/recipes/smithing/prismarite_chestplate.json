@@ -4,7 +4,7 @@
     "item": "minecraft:diamond_chestplate"
   },
   "addition": {
-    "tag": "modestmining:prismarite_platings"
+    "item": "modestmining:prismarite_ingot"
   },
   "result": {
     "item": "modestmining:prismarite_chestplate"

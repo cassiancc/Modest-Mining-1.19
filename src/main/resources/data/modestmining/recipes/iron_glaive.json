@@ -6,10 +6,10 @@
       "item": "minecraft:stick"
     },
     "#": {
-      "tag": "modestmining:iron_pieces"
+      "item": "minecraft:iron_ingot"
     },
     "@": {
-      "item": "modestmining:iron_piece"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

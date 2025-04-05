@@ -6,7 +6,7 @@
       "item": "minecraft:stick"
     },
     "#": {
-      "tag": "modestmining:iron_pieces"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

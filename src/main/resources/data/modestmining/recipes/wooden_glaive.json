@@ -3,7 +3,7 @@
   "pattern": [
     "XX#",
     "X#@",
-    "#F "
+    "#  "
   ],
   "key": {
     "#": {
@@ -14,9 +14,6 @@
     },
     "@": {
       "item": "modestmining:plank"
-    },
-    "F": {
-      "item": "modestmining:fiber"
     }
   },
   "result": {

@@ -3,21 +3,22 @@
   "cooktime": 144,
   "key": {
     "X": {
-      "item": "minecraft:stick"
+      "item": "minecraft:iron_nugget"
     },
     "#": {
-      "item": "minecraft:copper_ingot"
+      "tag": "minecraft:iron_ingot"
     }
   },
   "pattern": [
-    "##",
-    "#X",
-    " X"
+    "X",
+    "#",
+    "X"
   ],
   "fuel": {
     "item": "modestmining:coke"
   },
   "result": {
-    "item": "modestmining:copper_hatchet"
+    "item": "minecraft:chain",
+    "count": 9
   }
 }

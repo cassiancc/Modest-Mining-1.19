@@ -18,17 +18,17 @@ public class ModTiers {
     public static final ForgeTier COPPER_TOOL = new ForgeTier(1, 300, 2.0f, 1.0f, 10,
             BlockTags.NEEDS_STONE_TOOL, () -> Ingredient.of(Items.COPPER_INGOT));
 
-    public static final ForgeTier STEEL = new ForgeTier(2, 1200, 7.0f, 2.5f, 14,
+    /*public static final ForgeTier STEEL = new ForgeTier(2, 1200, 7.0f, 2.5f, 14,
             BlockTags.NEEDS_IRON_TOOL, () -> Ingredient.of(ModItems.STEEL_INGOT.get()));
 
     public static final ForgeTier ROSEGOLD = new ForgeTier(0, 1200, 12.0f, 0.0f, 22,
-            BlockTags.NEEDS_STONE_TOOL, () -> Ingredient.of(ModItems.ROSEGOLD_INGOT.get()));
+            BlockTags.NEEDS_STONE_TOOL, () -> Ingredient.of(ModItems.ROSEGOLD_INGOT.get()));*/
 
     public static final ForgeTier PRISMARITE = new ForgeTier(4, 2031, 9.0f, 4.0f, 13,
             BlockTags.NEEDS_DIAMOND_TOOL, () -> Ingredient.of(ModItems.PRISMARITE_INGOT.get()));
 
 
-    public static final ForgeTier MOUNTAIN_FLINT = new ForgeTier(0, 45, 0.25f, 1.5f, 2,
+    /*public static final ForgeTier MOUNTAIN_FLINT = new ForgeTier(0, 45, 0.25f, 1.5f, 2,
             ModTags.Blocks.NEEDS_FLINT_TOOL, () -> Ingredient.of(Items.FLINT));
 
     public static final ForgeTier MOUNTAIN_WOOD = new ForgeTier(0, 59, 0.5F, 1.5f, 15,
@@ -56,6 +56,6 @@ public class ModTiers {
             BlockTags.NEEDS_DIAMOND_TOOL, () -> Ingredient.of(Items.NETHERITE_INGOT));
 
     public static final ForgeTier MOUNTAIN_PRISMARITE = new ForgeTier(4, 2031, 5.0f, 5.5f, 13,
-            BlockTags.NEEDS_DIAMOND_TOOL, () -> Ingredient.of(ModItems.PRISMARITE_INGOT.get()));
+            BlockTags.NEEDS_DIAMOND_TOOL, () -> Ingredient.of(ModItems.PRISMARITE_INGOT.get()));*/
 
 }

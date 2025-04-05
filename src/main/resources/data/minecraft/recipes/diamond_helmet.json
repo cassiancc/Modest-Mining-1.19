@@ -3,7 +3,7 @@
   "cooktime": 144,
   "key": {
     "#": {
-      "tag": "modestmining:diamond_platings"
+      "item": "minecraft:diamond"
     }
   },
   "pattern": [

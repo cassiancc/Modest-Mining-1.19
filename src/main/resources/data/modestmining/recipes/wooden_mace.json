@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " &X",
-    "F#&",
-    "#F "
+    " #&",
+    "#  "
   ],
   "key": {
     "#": {
@@ -14,9 +14,6 @@
     },
     "&": {
       "item": "modestmining:plank"
-    },
-    "F": {
-      "item": "modestmining:fiber"
     }
   },
   "result": {

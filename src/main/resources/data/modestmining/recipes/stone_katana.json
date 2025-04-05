@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " XX",
-    "@# ",
+    "X# ",
     "#  "
   ],
   "key": {
@@ -11,9 +11,6 @@
     },
     "X": {
       "tag": "minecraft:stone_tool_materials"
-    },
-    "@": {
-      "item": "modestmining:rocks"
     }
   },
   "result": {

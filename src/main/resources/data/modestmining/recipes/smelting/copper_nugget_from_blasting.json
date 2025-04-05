@@ -9,9 +9,6 @@
     },
     {
       "item": "minecraft:spyglass"
-    },
-    {
-      "item": "modestmining:copper_hatchet"
     }
   ],
   "result": "modestmining:copper_nugget",

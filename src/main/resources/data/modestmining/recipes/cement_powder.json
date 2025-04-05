@@ -9,29 +9,20 @@
       "item": "modestmining:shell"
     },
     {
-      "item": "modestmining:shell"
-    },
-    {
       "item": "minecraft:clay_ball"
     },
     {
       "item": "minecraft:clay_ball"
     },
     {
-      "item": "minecraft:clay_ball"
+      "item": "minecraft:gravel"
     },
     {
-      "item": "modestmining:rocks"
-    },
-    {
-      "item": "modestmining:rocks"
-    },
-    {
-      "item": "modestmining:rocks"
+      "item": "minecraft:gravel"
     }
   ],
   "result": {
     "item": "modestmining:cement_powder",
-    "count": 8
+    "count": 4
   }
 }
