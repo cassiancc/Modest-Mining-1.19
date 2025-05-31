@@ -24,7 +24,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
     private final IDrawable icon;
 
     public ForgingRecipeCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
+        this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.FORGE.get()));
     }
 
@@ -35,7 +35,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
 
     @Override
     public Component getTitle() {
-        return Component.literal("Shapeless Forging");
+        return Component.translatable("recipe.modestmining.shapeless_forging");
     }
 
     @Override
@@ -50,25 +50,25 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ForgeRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 30, 19).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 3, 5).addIngredients(recipe.getIngredients().get(0));
         if (recipe.getIngredients().size() > 1) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 48, 19).addIngredients(recipe.getIngredients().get(1));
+            builder.addSlot(RecipeIngredientRole.INPUT, 21, 5).addIngredients(recipe.getIngredients().get(1));
             if (recipe.getIngredients().size() > 2) {
-                builder.addSlot(RecipeIngredientRole.INPUT, 66, 19).addIngredients(recipe.getIngredients().get(2));
+                builder.addSlot(RecipeIngredientRole.INPUT, 39, 5).addIngredients(recipe.getIngredients().get(2));
                 if (recipe.getIngredients().size() > 3) {
-                    builder.addSlot(RecipeIngredientRole.INPUT, 30, 37).addIngredients(recipe.getIngredients().get(3));
+                    builder.addSlot(RecipeIngredientRole.INPUT, 3, 23).addIngredients(recipe.getIngredients().get(3));
                     if (recipe.getIngredients().size() > 4) {
-                        builder.addSlot(RecipeIngredientRole.INPUT, 48, 37).addIngredients(recipe.getIngredients().get(4));
+                        builder.addSlot(RecipeIngredientRole.INPUT, 21, 23).addIngredients(recipe.getIngredients().get(4));
                         if (recipe.getIngredients().size() > 5) {
-                            builder.addSlot(RecipeIngredientRole.INPUT, 66, 37).addIngredients(recipe.getIngredients().get(5));
+                            builder.addSlot(RecipeIngredientRole.INPUT, 39, 23).addIngredients(recipe.getIngredients().get(5));
                             if (recipe.getIngredients().size() > 6) {
-                                builder.addSlot(RecipeIngredientRole.INPUT, 30, 55).addIngredients(recipe.getIngredients().get(6));
+                                builder.addSlot(RecipeIngredientRole.INPUT, 3, 41).addIngredients(recipe.getIngredients().get(6));
                                 if (recipe.getIngredients().size() > 7) {
-                                    builder.addSlot(RecipeIngredientRole.INPUT, 48, 55).addIngredients(recipe.getIngredients().get(7));
+                                    builder.addSlot(RecipeIngredientRole.INPUT, 21, 41).addIngredients(recipe.getIngredients().get(7));
                                     if (recipe.getIngredients().size() > 8) {
-                                        builder.addSlot(RecipeIngredientRole.INPUT, 66, 55).addIngredients(recipe.getIngredients().get(8));
+                                        builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
         }}}}}}}}
-        builder.addSlot(RecipeIngredientRole.INPUT, 93, 55).addIngredients(recipe.getFuel());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 124, 21).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 66, 41).addIngredients(recipe.getFuel());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
     }
 }

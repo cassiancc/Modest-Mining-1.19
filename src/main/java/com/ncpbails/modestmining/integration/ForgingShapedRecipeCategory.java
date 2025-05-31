@@ -24,7 +24,7 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     private final IDrawable icon;
 
     public ForgingShapedRecipeCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
+        this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.FORGE.get()));
     }
 
@@ -35,7 +35,7 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
 
     @Override
     public Component getTitle() {
-        return Component.literal("Shaped Forging");
+        return Component.translatable("recipe.modestmining.shaped_forging");
     }
 
     @Override
@@ -50,8 +50,8 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ForgeShapedRecipe recipe, IFocusGroup focuses) {
-        int startX = 30;
-        int startY = 19;
+        int startX = 3;
+        int startY = 5;
         int index = 0;
 
         for (int y = 0; y < recipe.getHeight(); y++) {
@@ -63,9 +63,9 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
         }
 
         // Add fuel slot
-        builder.addSlot(RecipeIngredientRole.INPUT, 93, 55).addIngredients(recipe.getFuel());
+        builder.addSlot(RecipeIngredientRole.INPUT, 66, 41).addIngredients(recipe.getFuel());
 
         // Add output slot
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 124, 21).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
     }
 }
