@@ -154,24 +154,24 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
 
         if (isFueled(pBlockEntity, pPos, pLevel)) {
             pBlockEntity.litTime--;
-            pLevel.setBlock(pPos, pBlockEntity.getBlockState().setValue(LIT, Boolean.TRUE), 3);
-            setChanged(pLevel, pPos, pState);
         } else {
             pBlockEntity.litTime = 0;
-            pLevel.setBlock(pPos, pBlockEntity.getBlockState().setValue(LIT, Boolean.FALSE), 3);
-            setChanged(pLevel, pPos, pState);
         }
 
         if (hasRecipe(pBlockEntity)) {
             pBlockEntity.progress++;
-            setChanged(pLevel, pPos, pState);
+            pBlockEntity.setChanged(pLevel, pPos, pState, true);
             if (pBlockEntity.progress > pBlockEntity.maxProgress) {
                 craftItem(pBlockEntity);
             }
         } else {
             pBlockEntity.resetProgress();
-            setChanged(pLevel, pPos, pState);
         }
+    }
+
+    private void setChanged(Level pLevel, BlockPos pPos, BlockState pState, boolean b) {
+        pLevel.setBlock(pPos, pState.setValue(LIT, b), 3);
+        super.setChanged();
     }
 
     private static boolean hasRecipe(ForgeBlockEntity entity) {
@@ -210,10 +210,14 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
 
 
     static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
+        if (level.isClientSide) return false;
         if (entity.litTime > 0) {
+            entity.setChanged(level, pos, entity.getBlockState(), true);
             return true;
         }
         else {
+            System.out.println("why: " + entity.litTime);
+            entity.setChanged(level, pos, entity.getBlockState(), false);
             return false;
         }
     }
@@ -224,7 +228,6 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
                 this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
                 if (fuel.getCount() > 1) {
-                    System.out.println(this.litTime);
                     fuel.setCount(fuel.getCount()-1);
                     this.itemHandler.setStackInSlot(9, fuel);
                 } else {
@@ -301,10 +304,11 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         entity.setDeltaMovement(xMotion, yMotion, zMotion);
         level.addFreshEntity(entity);
     }
-    private int getTheCount (ItemStack itemIn)
-    {
+
+    private int getTheCount (ItemStack itemIn) {
         return itemIn.getCount();
     }
+
     private void resetProgress() {
         this.progress = 0;
         this.maxProgress = 72;
