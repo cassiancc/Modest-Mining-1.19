@@ -21,12 +21,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -120,9 +124,9 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("Forge.progress", progress);
-        tag.putInt("Forge.lit_time", litTime);
-        tag.putInt("Forge.max_progress", maxProgress);
+        tag.putInt("forge.progress", progress);
+        tag.putInt("forge.lit_time", litTime);
+        tag.putInt("forge.max_progress", maxProgress);
         super.saveAdditional(tag);
     }
 
@@ -130,9 +134,9 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
     public void load(CompoundTag nbt) {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        progress = nbt.getInt("Forge.progress");
-        litTime = nbt.getInt("Forge.lit_time");
-        maxProgress = nbt.getInt("Forge.max_progress");
+        progress = nbt.getInt("forge.progress");
+        litTime = nbt.getInt("forge.lit_time");
+        maxProgress = nbt.getInt("forge.max_progress");
     }
 
     public void drops() {
@@ -149,10 +153,12 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
 
 
         if (isFueled(pBlockEntity, pPos, pLevel)) {
-            pBlockEntity.litTime = 1;
+            pBlockEntity.litTime--;
+            pLevel.setBlock(pPos, pBlockEntity.getBlockState().setValue(LIT, Boolean.TRUE), 3);
             setChanged(pLevel, pPos, pState);
         } else {
             pBlockEntity.litTime = 0;
+            pLevel.setBlock(pPos, pBlockEntity.getBlockState().setValue(LIT, Boolean.FALSE), 3);
             setChanged(pLevel, pPos, pState);
         }
 
@@ -174,7 +180,8 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
 
         // Check if the Forge is fueled (lit)
         if (!isFueled(entity, pos, level)) {
-            return false;
+            if (!entity.burnFuel())
+                return false;
         }
 
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
@@ -203,21 +210,30 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
 
 
     static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
-        BlockState stateBelow = level.getBlockState(pos.below());
-        if (stateBelow.hasProperty(BlockStateProperties.LIT) ? stateBelow.getValue(BlockStateProperties.LIT) : true) {
-            if (stateBelow.is(Blocks.CAMPFIRE) || stateBelow.is(Blocks.CAMPFIRE)) { // TODO REPLACE
-                level.setBlock(pos, entity.getBlockState().setValue(LIT, Boolean.TRUE), 3);
-                return true;
-            }
-            else {
-                level.setBlock(pos, entity.getBlockState().setValue(LIT, Boolean.FALSE), 3);
-                return false;
-            }
+        if (entity.litTime > 0) {
+            return true;
         }
         else {
-            level.setBlock(pos, entity.getBlockState().setValue(LIT, Boolean.valueOf(false)), 3);
             return false;
         }
+    }
+
+    private boolean burnFuel() {
+        if (!this.level.isClientSide) {
+            var fuel = this.itemHandler.getStackInSlot(9).copy();
+            if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
+                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
+                if (fuel.getCount() > 1) {
+                    System.out.println(this.litTime);
+                    fuel.setCount(fuel.getCount()-1);
+                    this.itemHandler.setStackInSlot(9, fuel);
+                } else {
+                    this.itemHandler.setStackInSlot(9, ItemStack.EMPTY);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void craftItem(ForgeBlockEntity entity) {
