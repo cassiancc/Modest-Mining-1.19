@@ -62,9 +62,6 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
             }
         }
 
-        // Add fuel slot
-        builder.addSlot(RecipeIngredientRole.INPUT, 66, 41).addIngredients(recipe.getFuel());
-
         // Add output slot
         builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
     }

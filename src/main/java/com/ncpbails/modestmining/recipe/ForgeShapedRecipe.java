@@ -39,16 +39,14 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
-    private final Ingredient fuel;
     private final int cookTime;
     private final boolean isSimple;
-    public ForgeShapedRecipe(int width, int height, ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, Ingredient fuel, int cookTime) {
+    public ForgeShapedRecipe(int width, int height, ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int cookTime) {
         this.width = width;
         this.height = height;
         this.id = id;
         this.output = output;
         this.recipeItems = recipeItems;
-        this.fuel = fuel;
         this.cookTime = cookTime;
         this.isSimple = recipeItems.stream().allMatch(Ingredient::isSimple);
     }
@@ -73,10 +71,6 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
         return recipeItems;
     }
 
-    public Ingredient getFuel() {
-        return fuel;
-    }
-
     public int getCookTime() {
         return this.cookTime;
     }
@@ -96,7 +90,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
         // Iterate over the crafting grid
         for (int offsetX = 0; offsetX <= 3 - this.getWidth(); ++offsetX) {
             for (int offsetY = 0; offsetY <= 3 - this.getHeight(); ++offsetY) {
-                if (checkIngredients(pContainer, offsetX, offsetY, slotUsed) && hasRequiredFuel(pContainer, pLevel)) {
+                if (checkIngredients(pContainer, offsetX, offsetY, slotUsed)) {
                     if (areOtherSlotsEmpty(pContainer, offsetX, offsetY)) {
                         return true; // Match found, return true
                     }
@@ -154,12 +148,6 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
         return true; // All ingredients matched
     }
 
-
-
-    private boolean hasRequiredFuel(SimpleContainer pContainer, Level pLevel) {
-        ItemStack fuelStack = pContainer.getItem(9);
-        return fuel.test(fuelStack);
-    }
     @Override
     public ItemStack assemble(SimpleContainer p_44001_) {
         return output;
@@ -353,8 +341,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
             NonNullList<Ingredient> nonnulllist = ForgeShapedRecipe.dissolvePattern(astring, map, width, height);
             ItemStack itemstack = ForgeShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
             int cookTimeIn = GsonHelper.getAsInt(json, "cooktime", 200);
-            Ingredient fuel = Ingredient.fromJson(json.get("fuel"));
-            return new ForgeShapedRecipe(width, height, id, itemstack, nonnulllist, fuel, cookTimeIn);
+            return new ForgeShapedRecipe(width, height, id, itemstack, nonnulllist, cookTimeIn);
         }
 
         @Override
@@ -369,8 +356,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
             ItemStack itemstack = buf.readItem();
             int cookTimeIn = buf.readVarInt();
-            Ingredient fuel = Ingredient.fromNetwork(buf);
-            return new ForgeShapedRecipe(width, height, id, itemstack, nonnulllist, fuel, cookTimeIn);
+            return new ForgeShapedRecipe(width, height, id, itemstack, nonnulllist, cookTimeIn);
         }
 
         @Override
@@ -383,7 +369,6 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
             buf.writeItem(recipe.getResultItem());
             buf.writeVarInt(recipe.cookTime);
-            recipe.fuel.toNetwork(buf);
         }
     }
 }

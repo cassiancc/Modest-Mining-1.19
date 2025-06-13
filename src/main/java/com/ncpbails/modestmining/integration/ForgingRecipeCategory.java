@@ -68,7 +68,6 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
                                     if (recipe.getIngredients().size() > 8) {
                                         builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
         }}}}}}}}
-        builder.addSlot(RecipeIngredientRole.INPUT, 66, 41).addIngredients(recipe.getFuel());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
     }
 }
