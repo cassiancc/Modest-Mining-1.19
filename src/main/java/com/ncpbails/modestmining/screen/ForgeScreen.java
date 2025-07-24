@@ -34,9 +34,8 @@ public class ForgeScreen extends AbstractContainerScreen<ForgeMenu> {
         if(menu.isFueled()) {
             float currentHeight = menu.getLitTime();
             int offset = (int) (15- currentHeight);
-            blit(pPoseStack, x + 94, y + 36+offset, 176, 0, 14, (int) currentHeight);
+            blit(pPoseStack, x + 94, y + 36+offset, 176, offset, 14, (int) currentHeight);
         }
-        drawString(pPoseStack, Minecraft.getInstance().font, String.valueOf(menu.getLitTime()), 0, 0, -1);
     }
 
     @Override

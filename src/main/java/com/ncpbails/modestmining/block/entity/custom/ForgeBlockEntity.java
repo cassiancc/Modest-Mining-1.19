@@ -129,6 +129,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         tag.putInt("forge.progress", progress);
         tag.putInt("forge.lit_time", litTime);
         tag.putInt("forge.max_progress", maxProgress);
+        tag.putInt("forge.fuel_amount", fuelAmount);
         super.saveAdditional(tag);
     }
 
@@ -139,6 +140,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         progress = nbt.getInt("forge.progress");
         litTime = nbt.getInt("forge.lit_time");
         maxProgress = nbt.getInt("forge.max_progress");
+        fuelAmount = nbt.getInt("forge.fuel_amount");
     }
 
     public void drops() {
@@ -222,7 +224,6 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             return true;
         }
         else {
-            System.out.println("why: " + entity.litTime);
             entity.setChanged(level, pos, entity.getBlockState(), false);
             return false;
         }
