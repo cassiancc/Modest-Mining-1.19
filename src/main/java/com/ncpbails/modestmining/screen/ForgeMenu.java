@@ -21,7 +21,7 @@ public class ForgeMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public ForgeMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(3));
+        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(4));
     }
 
     public ForgeMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
@@ -69,7 +69,8 @@ public class ForgeMenu extends AbstractContainerMenu {
 
     public int getLitTime() {
         int litTime = this.data.get(2);
-        float percentage = (float) litTime /8000;
+        int fuel = this.data.get(3);
+        float percentage = (float) litTime / fuel;
         percentage = percentage * 17;
         return (int) percentage;
     }

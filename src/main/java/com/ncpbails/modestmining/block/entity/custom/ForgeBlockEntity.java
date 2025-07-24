@@ -50,6 +50,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
     private int progress = 0;
     private int maxProgress = 72;
     private int litTime = 0;
+    private int fuelAmount = 0;
     static int countOutput = 1;
     private ContainerOpenersCounter openersCounter;
 
@@ -70,6 +71,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
                     case 0 -> ForgeBlockEntity.this.progress;
                     case 1 -> ForgeBlockEntity.this.maxProgress;
                     case 2 -> ForgeBlockEntity.this.litTime;
+                    case 3 -> ForgeBlockEntity.this.fuelAmount;
                     default -> 0;
                 };
             }
@@ -83,7 +85,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             }
 
             public int getCount() {
-                return 3;
+                return 4;
             }
         };
     }
@@ -226,6 +228,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         if (!this.level.isClientSide) {
             var fuel = this.itemHandler.getStackInSlot(9).copy();
             if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
+                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
                 this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
                 if (fuel.getCount() > 1) {
                     fuel.setCount(fuel.getCount()-1);
