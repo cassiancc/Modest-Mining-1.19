@@ -180,15 +180,19 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         Level level = entity.level;
         BlockPos pos = entity.getBlockPos();
 
+        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
+
+        if (!inventory.getItem(10).isEmpty() && !inventory.getItem(10).isStackable()) {
+            return false;
+        }
+
         // Check if the Forge is fueled (lit)
         if (!isFueled(entity, pos, level)) {
             if (!entity.burnFuel())
                 return false;
-        }
-
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
         // Check for ForgeShapedRecipe
