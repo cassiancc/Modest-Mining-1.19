@@ -3,6 +3,7 @@ package com.ncpbails.modestmining.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ncpbails.modestmining.ModestMining;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -31,7 +32,9 @@ public class ForgeScreen extends AbstractContainerScreen<ForgeMenu> {
             blit(pPoseStack, x + 89, y + 17, 176, 14,  menu.getScaledProgress(), 17);
         }
         if(menu.isFueled()) {
-            blit(pPoseStack, x + 94, y + 36, 176, 0, 14, 15);
+            float currentHeight = menu.getLitTime();
+            int offset = (int) (15- currentHeight);
+            blit(pPoseStack, x + 94, y + 36+offset, 176, offset, 14, (int) currentHeight);
         }
     }
 

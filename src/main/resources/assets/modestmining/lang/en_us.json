@@ -316,5 +316,8 @@
   "effect.modestmining.prismarite_strength": "Prismarite Strength",
   "effect.modestmining.prismarite_speed": "Prismarite Speed",
 
-  "entity.modestmining.clam": "Clam"
+  "entity.modestmining.clam": "Clam",
+
+  "recipe.modestmining.shaped_forging": "Shaped Forging",
+  "recipe.modestmining.shapeless_forging": "Shapeless Forging"
 }

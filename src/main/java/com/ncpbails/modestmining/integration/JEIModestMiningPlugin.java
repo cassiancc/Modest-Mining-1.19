@@ -1,11 +1,13 @@
 package com.ncpbails.modestmining.integration;
 
 import com.ncpbails.modestmining.ModestMining;
+import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
 import com.ncpbails.modestmining.recipe.ForgeShapedRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
@@ -45,5 +47,13 @@ public class JEIModestMiningPlugin implements IModPlugin {
 
         List<ForgeShapedRecipe> recipesShaped = rm.getAllRecipesFor(ForgeShapedRecipe.Type.INSTANCE);
         registration.addRecipes(FORGING_SHAPED_TYPE, recipesShaped);
+    }
+
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        var stack = ModBlocks.FORGE.get().asItem().getDefaultInstance();
+        registration.addRecipeCatalyst(stack, FORGING_SHAPED_TYPE);
+        registration.addRecipeCatalyst(stack, FORGING_TYPE);
     }
 }

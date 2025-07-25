@@ -24,15 +24,13 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
-    private final Ingredient fuel;
     private final int cookTime;
     private final boolean isSimple;
 
-    public ForgeRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, Ingredient fuel, int cookTime) {
+    public ForgeRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int cookTime) {
         this.id = id;
         this.output = output;
         this.recipeItems = recipeItems;
-        this.fuel = fuel;
         this.cookTime = cookTime;
         this.isSimple = recipeItems.stream().allMatch(Ingredient::isSimple);
     }
@@ -55,10 +53,6 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return recipeItems;
-    }
-
-    public Ingredient getFuel() {
-        return fuel;
     }
 
     public int getCookTime() {
@@ -95,13 +89,10 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
         //RecipeMatcher.findMatches(inputs, this.recipeItems) != null);
 
         //return i >= this.recipeItems.size() && RecipeMatcher.findMatches(inputs, this.recipeItems) != null;
-        return i == this.recipeItems.size() && hasRequiredFuel(pContainer, pLevel)
+        return i == this.recipeItems.size()
                 && (isSimple ? stackedcontents.canCraft(this, (IntList)null) : RecipeMatcher.findMatches(inputs,  this.recipeItems) != null);
     }
-    private boolean hasRequiredFuel(SimpleContainer pContainer, Level pLevel) {
-        ItemStack fuelStack = pContainer.getItem(9);
-        return fuel.test(fuelStack);
-    }
+
     @Override
     public ItemStack assemble(SimpleContainer p_44001_) {
         return output;
@@ -136,8 +127,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
             } else {
                 ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
                 int cookTimeIn = GsonHelper.getAsInt(json, "cooktime", 200);
-                Ingredient fuel = Ingredient.fromJson(json.get("fuel"));
-                return new ForgeRecipe(resourceLocation, itemstack, inputs, fuel, cookTimeIn);
+                return new ForgeRecipe(resourceLocation, itemstack, inputs,  cookTimeIn);
             }
         }
 
@@ -164,8 +154,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
 
             ItemStack itemstack = buf.readItem();
             int cookTimeIn = buf.readVarInt();
-            Ingredient fuel = Ingredient.fromNetwork(buf);
-            return new ForgeRecipe(id, itemstack, inputs, fuel, cookTimeIn);
+            return new ForgeRecipe(id, itemstack, inputs, cookTimeIn);
         }
 
         @Override
@@ -178,7 +167,6 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
 
             buf.writeItem(recipe.getResultItem());
             buf.writeVarInt(recipe.cookTime);
-            recipe.fuel.toNetwork(buf);
 
         }
     }
