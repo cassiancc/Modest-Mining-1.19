@@ -10,6 +10,7 @@ import com.ncpbails.modestmining.item.ModItems;
 import com.ncpbails.modestmining.recipe.ModRecipes;
 import com.ncpbails.modestmining.screen.ForgeScreen;
 import com.ncpbails.modestmining.screen.ModMenuTypes;
+import com.ncpbails.modestmining.sounds.ModSounds;
 import com.ncpbails.modestmining.world.feature.ModConfiguredFeatures;
 import com.ncpbails.modestmining.world.feature.ModPlacedFeatures;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -66,6 +67,7 @@ public class ModestMining
         ModRecipes.register(eventBus);
         ModEntityTypes.register(eventBus);
         GeckoLib.initialize();
+        ModSounds.SOUND_EVENTS.register(eventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

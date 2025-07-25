@@ -239,7 +239,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
                     fuel.setCount(fuel.getCount()-1);
                     this.itemHandler.setStackInSlot(9, fuel);
                 } else {
-                    this.itemHandler.setStackInSlot(9, ItemStack.EMPTY);
+                    this.itemHandler.setStackInSlot(9, fuel.getCraftingRemainingItem());
                 }
                 return true;
             }

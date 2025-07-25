@@ -2,6 +2,7 @@ package com.ncpbails.modestmining.screen;
 
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.block.entity.custom.ForgeBlockEntity;
+import com.ncpbails.modestmining.screen.slot.ModFuelSlot;
 import com.ncpbails.modestmining.screen.slot.ModResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +45,7 @@ public class ForgeMenu extends AbstractContainerMenu {
             this.addSlot(new SlotItemHandler(handler, 6, 30, 53));
             this.addSlot(new SlotItemHandler(handler, 7, 48, 53));
             this.addSlot(new SlotItemHandler(handler, 8, 66, 53));
-            this.addSlot(new SlotItemHandler(handler, 9, 93, 53));
+            this.addSlot(new ModFuelSlot(handler, 9, 93, 53));
             this.addSlot(new ModResultSlot(handler, 10, 124, 19));
         });
 

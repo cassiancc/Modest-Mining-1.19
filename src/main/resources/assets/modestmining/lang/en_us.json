@@ -319,5 +319,7 @@
   "entity.modestmining.clam": "Clam",
 
   "recipe.modestmining.shaped_forging": "Shaped Forging",
-  "recipe.modestmining.shapeless_forging": "Shapeless Forging"
+  "recipe.modestmining.shapeless_forging": "Shapeless Forging",
+
+  "modestmining.subtitles.forge.crackle": "Forge crackles"
 }

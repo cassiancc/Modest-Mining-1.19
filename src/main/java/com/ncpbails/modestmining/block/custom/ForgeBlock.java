@@ -2,10 +2,13 @@ package com.ncpbails.modestmining.block.custom;
 
 import com.ncpbails.modestmining.block.entity.ModBlockEntities;
 import com.ncpbails.modestmining.block.entity.custom.ForgeBlockEntity;
+import com.ncpbails.modestmining.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -57,9 +60,9 @@ public class ForgeBlock extends BaseEntityBlock {
             double x = (double)pos.getX() + (double)0.5F;
             double y = pos.getY();
             double z = (double)pos.getZ() + (double)0.5F;
-//            if (randomSource.nextInt(10) == 0) {
-//                level.playLocalSound((double)pos.getX() + (double)0.5F, (double)pos.getY() + (double)0.5F, (double)pos.getZ() + (double)0.5F, ModSounds.OVEN_CRACKLE.get(), SoundSource.BLOCKS, 0.5F + randomSource.nextFloat(), randomSource.nextFloat() * 0.7F + 0.6F, false);
-//            }
+            if (randomSource.nextInt(10) == 0) {
+                level.playLocalSound((double)pos.getX() + (double)0.5F, (double)pos.getY() + (double)0.5F, (double)pos.getZ() + (double)0.5F, ModSounds.FORGE_CRACKLE.get(), SoundSource.BLOCKS, 0.5F + randomSource.nextFloat(), randomSource.nextFloat() * 0.7F + 0.6F, false);
+            }
             Direction direction = state.getValue(FACING);
             Direction.Axis axis = direction.getAxis();
             double r1 = randomSource.nextDouble() * 0.6 - 0.3;
