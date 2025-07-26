@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -104,6 +105,10 @@ public class ForgeMenu extends AbstractContainerMenu {
         // Check if the slot clicked is one of the vanilla container slots
         if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
+            if (AbstractFurnaceBlockEntity.isFuel(sourceStack) && !moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX+9, TE_INVENTORY_FIRST_SLOT_INDEX
+                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                return ItemStack.EMPTY;  // EMPTY_ITEM
+            }
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
                     + TE_INVENTORY_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
