@@ -52,6 +52,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            resetProgress();
         }
     };
 
