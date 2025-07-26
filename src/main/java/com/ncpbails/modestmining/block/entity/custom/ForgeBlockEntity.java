@@ -185,12 +185,6 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             return false;
         }
 
-        // Check if the Forge is fueled (lit)
-        if (!isFueled(entity, pos, level)) {
-            if (!entity.burnFuel())
-                return false;
-        }
-
         // Check for ForgeShapedRecipe
         Optional<ForgeShapedRecipe> shapedMatch = level.getRecipeManager()
                 .getRecipeFor(ForgeShapedRecipe.Type.INSTANCE, inventory, level);
@@ -200,16 +194,22 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
                 .getRecipeFor(ForgeRecipe.Type.INSTANCE, inventory, level);
 
         if (shapedMatch.isPresent()) {
-            entity.maxProgress = shapedMatch.get().getCookTime();
-            return true;
+            return startCraftIfFueled(entity, pos, level, shapedMatch.get().getCookTime());
         } else if (recipeMatch.isPresent()) {
-            entity.maxProgress = recipeMatch.get().getCookTime();
-            return true;
+            return startCraftIfFueled(entity, pos, level, recipeMatch.get().getCookTime());
         }
 
         return false;
     }
 
+    static boolean startCraftIfFueled(ForgeBlockEntity entity, BlockPos pos, Level level, int progress) {
+        if (!isFueled(entity, pos, level)) {
+            if (!entity.burnFuel())
+                return false;
+        }
+        entity.maxProgress = progress;
+        return true;
+    }
 
     static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
         if (level.isClientSide) return false;
