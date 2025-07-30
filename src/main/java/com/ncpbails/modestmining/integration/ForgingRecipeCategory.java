@@ -8,10 +8,12 @@ import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
 import com.ncpbails.modestmining.recipe.ForgeShapedRecipe;
+import mezz.jei.api.constants.ModIds;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -33,6 +35,8 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
     private final IDrawable icon;
     private final int regularCookTime = 400;
     private final LoadingCache<Integer, IDrawableAnimated> cachedArrows;
+    protected final IDrawableStatic staticFlame;
+    protected final IDrawableAnimated animatedFlame;
 
     public ForgingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
@@ -46,10 +50,13 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
                                 .buildAnimated(cookTime, IDrawableAnimated.StartDirection.LEFT, false);
                     }
                 });
+        staticFlame = helper.createDrawable(new ResourceLocation(ModIds.JEI_ID, "textures/gui/gui_vanilla.png"), 82, 114, 14, 14);
+        animatedFlame = helper.createAnimatedDrawable(staticFlame, 300, IDrawableAnimated.StartDirection.TOP, true);
     }
 
     @Override
     public void draw(ForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
+        animatedFlame.draw(poseStack, 68, 24);
         IDrawableAnimated arrow = getArrow(recipe);
         arrow.draw(poseStack, 63, 4);
         drawCookTime(recipe, poseStack, 50);
