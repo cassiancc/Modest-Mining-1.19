@@ -56,7 +56,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
 
     @Override
     public void draw(ForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
-        animatedFlame.draw(poseStack, 68, 24);
+        animatedFlame.draw(poseStack, 66, 23);
         IDrawableAnimated arrow = getArrow(recipe);
         arrow.draw(poseStack, 63, 4);
         drawCookTime(recipe, poseStack, 50);
