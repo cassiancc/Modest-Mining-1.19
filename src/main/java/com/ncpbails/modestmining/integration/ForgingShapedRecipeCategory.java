@@ -14,6 +14,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -34,32 +35,23 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     private final IDrawable background;
     private final IDrawable icon;
     private final int regularCookTime = 400;
-    private final LoadingCache<Integer, IDrawableAnimated> cachedArrows;
-    protected final IDrawableStatic staticFlame;
-    protected final IDrawableAnimated animatedFlame;
 
     public ForgingShapedRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.FORGE.get()));
-        this.cachedArrows = CacheBuilder.newBuilder()
-                .maximumSize(25)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public IDrawableAnimated load(Integer cookTime) {
-                        return helper.drawableBuilder(TEXTURE, 123, 0, 23, 18)
-                                .buildAnimated(cookTime, IDrawableAnimated.StartDirection.LEFT, false);
-                    }
-                });
-        staticFlame = helper.createDrawable(new ResourceLocation(ModIds.JEI_ID, "textures/gui/gui_vanilla.png"), 82, 114, 14, 14);
-        animatedFlame = helper.createAnimatedDrawable(staticFlame, 300, IDrawableAnimated.StartDirection.TOP, true);
     }
 
     @Override
     public void draw(ForgeShapedRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        animatedFlame.draw(guiGraphics, 66, 23);
-        IDrawableAnimated arrow = getArrow(recipe);
-        arrow.draw(guiGraphics, 63, 4);
         drawCookTime(recipe, guiGraphics, 50);
+    }
+
+    @Override
+    public void createRecipeExtras(IRecipeExtrasBuilder builder, ForgeShapedRecipe recipe, IFocusGroup focuses) {
+        builder.addAnimatedRecipeArrow(recipe.getCookTime())
+                .setPosition(63, 4);
+        builder.addAnimatedRecipeFlame(300)
+                .setPosition(66, 23);
     }
 
     protected void drawCookTime(ForgeShapedRecipe recipe, GuiGraphics guiGraphics, int y) {
@@ -70,16 +62,8 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
             Minecraft minecraft = Minecraft.getInstance();
             Font fontRenderer = minecraft.font;
             int stringWidth = fontRenderer.width(timeString);
-            guiGraphics.drawString(fontRenderer, timeString, getWidth() - stringWidth, y, 0xFF808080);
+            guiGraphics.drawString(fontRenderer, timeString, getWidth() - stringWidth, y, 0xFF808080, false);
         }
-    }
-
-    protected IDrawableAnimated getArrow(ForgeShapedRecipe recipe) {
-        int cookTime = recipe.getCookTime();
-        if (cookTime <= 0) {
-            cookTime = regularCookTime;
-        }
-        return this.cachedArrows.getUnchecked(cookTime);
     }
 
     @Override
