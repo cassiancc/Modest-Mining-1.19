@@ -22,6 +22,8 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -55,14 +57,14 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
     }
 
     @Override
-    public void draw(ForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
-        animatedFlame.draw(poseStack, 66, 23);
+    public void draw(ForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        animatedFlame.draw(guiGraphics, 66, 23);
         IDrawableAnimated arrow = getArrow(recipe);
-        arrow.draw(poseStack, 63, 4);
-        drawCookTime(recipe, poseStack, 50);
+        arrow.draw(guiGraphics, 63, 4);
+        drawCookTime(recipe, guiGraphics, 50);
     }
 
-    protected void drawCookTime(ForgeRecipe recipe, PoseStack poseStack, int y) {
+    protected void drawCookTime(ForgeRecipe recipe, GuiGraphics guiGraphics, int y) {
         int cookTime = recipe.getCookTime();
         if (cookTime > 0) {
             int cookTimeSeconds = cookTime / 20;
@@ -70,7 +72,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
             Minecraft minecraft = Minecraft.getInstance();
             Font fontRenderer = minecraft.font;
             int stringWidth = fontRenderer.width(timeString);
-            fontRenderer.draw(poseStack, timeString, getWidth() - stringWidth, y, 0xFF808080);
+            guiGraphics.drawString(fontRenderer, timeString, getWidth() - stringWidth, y, 0xFF808080);
         }
     }
 
@@ -122,6 +124,6 @@ public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
                                     if (recipe.getIngredients().size() > 8) {
                                         builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
         }}}}}}}}
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getOutput());
     }
 }

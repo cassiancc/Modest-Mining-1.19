@@ -30,10 +30,9 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 import static com.ncpbails.modestmining.block.custom.ForgeBlock.LIT;
@@ -119,7 +118,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
         tag.putInt("forge.progress", progress);
         tag.putInt("forge.lit_time", litTime);
@@ -272,10 +271,10 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             for (int i = 0; i < 9; ++i) {
                 entity.itemHandler.extractItem(i, 1, false);
             }
-            inventory.getItem(10).is(shapedMatch.get().getResultItem().getItem());
+            inventory.getItem(10).is(shapedMatch.get().getResultItem(level.registryAccess()).getItem());
 
-            entity.itemHandler.setStackInSlot(10, new ItemStack(shapedMatch.get().getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(shapedMatch.get().getResultItem())));
+            entity.itemHandler.setStackInSlot(10, new ItemStack(shapedMatch.get().getResultItem(level.registryAccess()).getItem(),
+                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(shapedMatch.get().getResultItem(level.registryAccess()))));
 
             entity.resetProgress();
 
@@ -294,10 +293,10 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             for (int i = 0; i < 9; ++i) {
                 entity.itemHandler.extractItem(i, 1, false);
             }
-            inventory.getItem(10).is(recipeMatch.get().getResultItem().getItem());
+            inventory.getItem(10).is(recipeMatch.get().getResultItem(level.registryAccess()).getItem());
 
-            entity.itemHandler.setStackInSlot(10, new ItemStack(recipeMatch.get().getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(recipeMatch.get().getResultItem())));
+            entity.itemHandler.setStackInSlot(10, new ItemStack(recipeMatch.get().getResultItem(level.registryAccess()).getItem(),
+                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(recipeMatch.get().getResultItem(level.registryAccess()))));
 
             entity.resetProgress();
         }

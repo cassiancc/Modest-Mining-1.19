@@ -24,6 +24,7 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.locating.IModFile;
 import net.minecraftforge.resource.PathPackResources;
 import org.slf4j.Logger;
-import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib.GeckoLib;
 
 import java.io.IOException;
 
@@ -61,8 +62,6 @@ public class ModestMining
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
         ModBlockEntities.register(eventBus);
-        ModConfiguredFeatures.register(eventBus);
-        ModPlacedFeatures.register(eventBus);
         ModMenuTypes.register(eventBus);
         ModRecipes.register(eventBus);
         ModEntityTypes.register(eventBus);
@@ -93,26 +92,25 @@ public class ModestMining
     }
 
     private static void registerBuiltinResourcePack(AddPackFindersEvent event, MutableComponent name, String folder) {
-        event.addRepositorySource((consumer, constructor) -> {
+        event.addRepositorySource((consumer) -> {
             ResourceLocation res = new ResourceLocation(ModestMining.MOD_ID, folder);
             IModFile file = ModList.get().getModFileById(ModestMining.MOD_ID).getFile();
             try (PathPackResources pack = new PathPackResources(
                     res.toString(),
+                    true,
                     file.findResource("resourcepacks/" + folder))) {
-
-                consumer.accept(constructor.create(
+                consumer.accept(Pack.create(
                         res.toString(),
                         name,
                         false,
-                        () -> pack,
-                        pack.getMetadataSection(PackMetadataSection.SERIALIZER),
+                        (p)-> pack,
+                        new Pack.Info(Component.literal("Updated textures for the vanilla metals and tools"), 9, FeatureFlagSet.of()),
+                        PackType.CLIENT_RESOURCES,
                         Pack.Position.BOTTOM,
-                        PackSource.BUILT_IN,
-                        false));
+                        false,
+                        PackSource.BUILT_IN
+                        ));
 
-            } catch (IOException e) {
-                if (!DatagenModLoader.isRunningDataGen())
-                    e.printStackTrace();
             }
         });
     }

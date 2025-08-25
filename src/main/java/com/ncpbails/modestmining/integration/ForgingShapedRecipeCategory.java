@@ -3,7 +3,6 @@ package com.ncpbails.modestmining.integration;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
@@ -22,6 +21,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -55,14 +55,14 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     }
 
     @Override
-    public void draw(ForgeShapedRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
-        animatedFlame.draw(poseStack, 66, 23);
+    public void draw(ForgeShapedRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        animatedFlame.draw(guiGraphics, 66, 23);
         IDrawableAnimated arrow = getArrow(recipe);
-        arrow.draw(poseStack, 63, 4);
-        drawCookTime(recipe, poseStack, 50);
+        arrow.draw(guiGraphics, 63, 4);
+        drawCookTime(recipe, guiGraphics, 50);
     }
 
-    protected void drawCookTime(ForgeShapedRecipe recipe, PoseStack poseStack, int y) {
+    protected void drawCookTime(ForgeShapedRecipe recipe, GuiGraphics guiGraphics, int y) {
         int cookTime = recipe.getCookTime();
         if (cookTime > 0) {
             int cookTimeSeconds = cookTime / 20;
@@ -70,7 +70,7 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
             Minecraft minecraft = Minecraft.getInstance();
             Font fontRenderer = minecraft.font;
             int stringWidth = fontRenderer.width(timeString);
-            fontRenderer.draw(poseStack, timeString, getWidth() - stringWidth, y, 0xFF808080);
+            guiGraphics.drawString(fontRenderer, timeString, getWidth() - stringWidth, y, 0xFF808080);
         }
     }
 
@@ -117,6 +117,7 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
         }
 
         // Add output slot
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
+        //FIXME
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getOutput());
     }
 }

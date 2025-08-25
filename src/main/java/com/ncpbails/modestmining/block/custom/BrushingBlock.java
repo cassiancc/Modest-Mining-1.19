@@ -28,8 +28,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class BrushingBlock extends BaseEntityBlock {
     public static IntegerProperty BRUSHING = IntegerProperty.create("brushing", 0, 3);
@@ -40,7 +40,7 @@ public class BrushingBlock extends BaseEntityBlock {
         this.registerDefaultState(super.defaultBlockState().setValue(BRUSHING, 0));
     }
 
-    public @NotNull VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE_BY_BRUSH[state.getValue(this.BRUSHING)];
     }
 

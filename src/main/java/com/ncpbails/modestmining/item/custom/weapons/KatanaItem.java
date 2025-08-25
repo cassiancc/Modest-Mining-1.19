@@ -18,7 +18,6 @@ import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.ForgeMod;
 
 import java.util.UUID;
@@ -44,7 +43,7 @@ public class KatanaItem extends TieredItem {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", this.speed, AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(ATTACK_RANGE_MODIFIER, "Weapon modifier", this.reach, AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(ATTACK_RANGE_MODIFIER, "Weapon modifier", this.reach, AttributeModifier.Operation.ADDITION));
         return builder.build();
     }
     @Override
@@ -60,12 +59,11 @@ public class KatanaItem extends TieredItem {
         return !p_43294_.isCreative();
     }
 
-    public float getDestroySpeed(ItemStack p_43288_, BlockState p_43289_) {
-        if (p_43289_.is(Blocks.COBWEB)) {
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        if (state.is(Blocks.COBWEB)) {
             return 15.0F;
         } else {
-            Material material = p_43289_.getMaterial();
-            return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && !p_43289_.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
+            return state.is(BlockTags.SWORD_EFFICIENT) ? 1.5F : 1.0F;
         }
     }
 

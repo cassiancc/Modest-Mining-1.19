@@ -9,6 +9,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -62,11 +65,6 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem() {
-        return output.copy();
-    }
-
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return recipeItems;
     }
@@ -77,7 +75,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
         ItemStack outputSlot = pContainer.getItem(10);
-        if (!outputSlot.isEmpty() && !ItemStack.isSame(this.getResultItem(), outputSlot)) {
+        if (!outputSlot.isEmpty() && !ItemStack.isSameItem(this.output, outputSlot)) {
             return false;
         }
 
@@ -147,9 +145,8 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
         return true; // All ingredients matched
     }
-
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
+    public ItemStack assemble(SimpleContainer container, RegistryAccess registryAccess) {
         return output;
     }
 
@@ -175,8 +172,17 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return output;
+    }
+
+    @Override
     public RecipeType<?> getType() {
         return Type.INSTANCE;
+    }
+
+    public ItemStack getOutput() {
+        return output;
     }
 
     public static class Type implements RecipeType<ForgeShapedRecipe> {
@@ -320,7 +326,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
 
     public static Item itemFromJson(JsonObject p_151279_) {
         String s = GsonHelper.getAsString(p_151279_, "item");
-        Item item = Registry.ITEM.getOptional(new ResourceLocation(s)).orElseThrow(() -> {
+        Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(s)).orElseThrow(() -> {
             return new JsonSyntaxException("Unknown item '" + s + "'");
         });
         if (item == Items.AIR) {
@@ -367,7 +373,7 @@ public class ForgeShapedRecipe implements Recipe<SimpleContainer> {
                 ingredient.toNetwork(buf);
             }
 
-            buf.writeItem(recipe.getResultItem());
+            buf.writeItem(recipe.getOutput());
             buf.writeVarInt(recipe.cookTime);
         }
     }

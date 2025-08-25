@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import com.ncpbails.modestmining.ModestMining;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -46,11 +47,6 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem() {
-        return output.copy();
-    }
-
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return recipeItems;
     }
@@ -63,7 +59,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
         // Check if output slot is already occupied with a different item
         ItemStack outputSlot = pContainer.getItem(10);
-        if (!outputSlot.isEmpty() && !ItemStack.isSame(this.getResultItem(), outputSlot)) {
+        if (!outputSlot.isEmpty() && !ItemStack.isSameItem(this.getResultItem(pLevel.registryAccess()), outputSlot)) {
             return false;
         }
 
@@ -94,7 +90,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
+    public ItemStack assemble(SimpleContainer container, RegistryAccess registryAccess) {
         return output;
     }
 
@@ -104,8 +100,17 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return output.copy();
+    }
+
+    @Override
     public RecipeType<?> getType() {
         return Type.INSTANCE;
+    }
+
+    public ItemStack getOutput() {
+        return output;
     }
 
     public static class Type implements RecipeType<ForgeRecipe> {
@@ -165,7 +170,7 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
                 ingredient.toNetwork(buf);
             }
 
-            buf.writeItem(recipe.getResultItem());
+            buf.writeItem(recipe.output);
             buf.writeVarInt(recipe.cookTime);
 
         }

@@ -14,7 +14,7 @@ public class ModSounds {
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
 
     public static final RegistryObject<SoundEvent> FORGE_CRACKLE = SOUND_EVENTS.register("oven_crackle",
-            () -> new SoundEvent(new ResourceLocation(MOD_ID, "block.forge.crackle")));
+            () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "block.forge.crackle")));
 
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
