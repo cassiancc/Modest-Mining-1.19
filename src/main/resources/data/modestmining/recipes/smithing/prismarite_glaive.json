@@ -1,10 +1,13 @@
 {
-  "type": "minecraft:smithing",
+  "type": "minecraft:smithing_transform",
   "base": {
     "item": "modestmining:diamond_glaive"
   },
   "addition": {
     "item": "modestmining:prismarite_ingot"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
   },
   "result": {
     "item": "modestmining:prismarite_glaive"
