@@ -25,11 +25,13 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -57,6 +59,7 @@ public class ModestMining
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::addPackFinders);
+        eventBus.addListener(this::creativeTabSetup);
 
         ModEffects.register(eventBus);
         ModItems.register(eventBus);
@@ -76,6 +79,79 @@ public class ModestMining
         SpawnPlacements.register(ModEntityTypes.CLAM.get(),
                 SpawnPlacements.Type.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
                 WaterAnimal::checkMobSpawnRules);
+    }
+
+    private void creativeTabSetup(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)) {
+            event.accept(ModItems.PLANK);
+            event.accept(ModItems.COKE);
+            event.accept(ModItems.COAL_CHUNK);
+            event.accept(ModItems.CHARCOAL_CHUNK);
+            event.accept(ModItems.COKE_CHUNK);
+            event.accept(ModItems.COPPER_NUGGET);
+            event.accept(ModItems.DIAMOND_SHARD);
+            event.accept(ModItems.PRISMARITE_NUGGET);
+            event.accept(ModItems.COPPER_SCREW);
+//            event.accept(ModItems.SHELL);
+            event.accept(ModItems.PEARL);
+            event.accept(ModItems.FLESH);
+            event.accept(ModItems.AMETHYST);
+            event.accept(ModItems.COPPER_DUST);
+            event.accept(ModItems.GOLD_DUST);
+            event.accept(ModItems.IRON_DUST);
+            event.accept(ModItems.DEBRIS_DUST);
+
+        }
+        else if (event.getTabKey().equals(CreativeModeTabs.SPAWN_EGGS)) {
+            event.accept(ModItems.CLAM_SPAWN_EGG);
+        }
+        else if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
+            event.accept(ModItems.BRUSH);
+            event.accept(ModItems.CHISEL);
+            event.accept(ModItems.PRISMARITE_SWORD);
+            event.accept(ModItems.PRISMARITE_AXE);
+            event.accept(ModItems.PRISMARITE_PICKAXE);
+            event.accept(ModItems.PRISMARITE_SHOVEL);
+            event.accept(ModItems.PRISMARITE_HOE);
+            event.accept(ModItems.PRISMARITE_HELMET);
+            event.accept(ModItems.PRISMARITE_CHESTPLATE);
+            event.accept(ModItems.PRISMARITE_LEGGINGS);
+            event.accept(ModItems.PRISMARITE_BOOTS);
+            event.accept(ModItems.WOODEN_HAMMER);
+            event.accept(ModItems.STONE_HAMMER);
+            event.accept(ModItems.IRON_HAMMER);
+//            event.accept(ModItems.STEEL_HAMMER);
+            event.accept(ModItems.GOLDEN_HAMMER);
+
+        }
+        else if (event.getTabKey().equals(CreativeModeTabs.COMBAT)) {
+            event.accept(ModItems.PRISMARITE_SWORD);
+            event.accept(ModItems.PRISMARITE_HELMET);
+            event.accept(ModItems.PRISMARITE_CHESTPLATE);
+            event.accept(ModItems.PRISMARITE_LEGGINGS);
+            event.accept(ModItems.PRISMARITE_BOOTS);
+            event.accept(ModItems.WOODEN_GLAIVE);
+            event.accept(ModItems.STONE_GLAIVE);
+            event.accept(ModItems.IRON_GLAIVE);
+            event.accept(ModItems.GOLDEN_GLAIVE);
+            event.accept(ModItems.DIAMOND_GLAIVE);
+            event.accept(ModItems.NETHERITE_GLAIVE);
+            event.accept(ModItems.PRISMARITE_GLAIVE);
+            event.accept(ModItems.WOODEN_KATANA);
+            event.accept(ModItems.STONE_KATANA);
+            event.accept(ModItems.GOLDEN_KATANA);
+            event.accept(ModItems.IRON_KATANA);
+            event.accept(ModItems.DIAMOND_KATANA);
+            event.accept(ModItems.NETHERITE_KATANA);
+            event.accept(ModItems.PRISMARITE_KATANA);
+            event.accept(ModItems.WOODEN_MACE);
+            event.accept(ModItems.STONE_MACE);
+            event.accept(ModItems.GOLDEN_MACE);
+            event.accept(ModItems.IRON_MACE);
+            event.accept(ModItems.DIAMOND_MACE);
+            event.accept(ModItems.NETHERITE_MACE);
+            event.accept(ModItems.PRISMARITE_MACE);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
