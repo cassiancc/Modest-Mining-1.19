@@ -151,6 +151,12 @@ public class ModestMining
             event.accept(ModItems.DIAMOND_MACE);
             event.accept(ModItems.NETHERITE_MACE);
             event.accept(ModItems.PRISMARITE_MACE);
+        } else if (event.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)) {
+            ModBlocks.NATURAL.forEach((block)->event.accept(block.get()));
+        } else if (event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)) {
+            ModBlocks.BUILDING_BLOCKS.forEach((block)->event.accept(block.get()));
+        }  else if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
+            ModBlocks.FUNCTIONAL.forEach((block)->event.accept(block.get()));
         }
     }
 
