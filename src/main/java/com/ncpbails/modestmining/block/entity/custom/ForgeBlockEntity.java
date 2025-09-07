@@ -7,11 +7,8 @@ import com.ncpbails.modestmining.recipe.ForgeShapedRecipe;
 import com.ncpbails.modestmining.screen.ForgeMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -21,15 +18,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -58,6 +52,9 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            if (slot < 9) {
+                resetProgress();
+            }
         }
     };
 
@@ -191,12 +188,6 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             return false;
         }
 
-        // Check if the Forge is fueled (lit)
-        if (!isFueled(entity, pos, level)) {
-            if (!entity.burnFuel())
-                return false;
-        }
-
         // Check for ForgeShapedRecipe
         Optional<ForgeShapedRecipe> shapedMatch = level.getRecipeManager()
                 .getRecipeFor(ForgeShapedRecipe.Type.INSTANCE, inventory, level);
@@ -206,16 +197,22 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
                 .getRecipeFor(ForgeRecipe.Type.INSTANCE, inventory, level);
 
         if (shapedMatch.isPresent()) {
-            entity.maxProgress = shapedMatch.get().getCookTime();
-            return true;
+            return startCraftIfFueled(entity, pos, level, shapedMatch.get().getCookTime());
         } else if (recipeMatch.isPresent()) {
-            entity.maxProgress = recipeMatch.get().getCookTime();
-            return true;
+            return startCraftIfFueled(entity, pos, level, recipeMatch.get().getCookTime());
         }
 
         return false;
     }
 
+    static boolean startCraftIfFueled(ForgeBlockEntity entity, BlockPos pos, Level level, int progress) {
+        if (!isFueled(entity, pos, level)) {
+            if (!entity.burnFuel())
+                return false;
+        }
+        entity.maxProgress = progress;
+        return true;
+    }
 
     static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
         if (level.isClientSide) return false;
@@ -233,13 +230,13 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         if (!this.level.isClientSide) {
             var fuel = this.itemHandler.getStackInSlot(9).copy();
             if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
-                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
-                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
+                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING)+1;
+                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING)+1;
                 if (fuel.getCount() > 1) {
                     fuel.setCount(fuel.getCount()-1);
                     this.itemHandler.setStackInSlot(9, fuel);
                 } else {
-                    this.itemHandler.setStackInSlot(9, ItemStack.EMPTY);
+                    this.itemHandler.setStackInSlot(9, fuel.getCraftingRemainingItem());
                 }
                 return true;
             }
