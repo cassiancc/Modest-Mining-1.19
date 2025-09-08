@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"1": "modestmining:block/forge_side",
-		"2": "modestmining:block/forge_top",
+		"2": "modestmining:block/forge_top_lit",
 		"3": "modestmining:block/forge_bottom",
 		"4": "modestmining:block/forge_front_lit",
 		"particle": "modestmining:block/forge_front_lit"
