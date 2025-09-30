@@ -153,7 +153,7 @@ repositories {
         }
     }
     maven {
-        url = "https://maven.jaackson.me"
+        url = "https://maven.teamabnormals.com/"
     }
     maven {
         url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
