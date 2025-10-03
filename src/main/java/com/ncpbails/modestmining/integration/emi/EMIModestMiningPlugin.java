@@ -5,6 +5,7 @@ import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
 import com.ncpbails.modestmining.recipe.ForgeShapedRecipe;
+import com.ncpbails.modestmining.screen.ModMenuTypes;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -46,5 +47,6 @@ public class EMIModestMiningPlugin implements EmiPlugin {
         for (var recipe : registry.getRecipeManager().getAllRecipesFor(ForgeShapedRecipe.Type.INSTANCE)) {
             registry.addRecipe(new ForgingShapedEmiRecipe(recipe));
         }
+        registry.addRecipeHandler(ModMenuTypes.FORGE_MENU.get(), new ForgingRecipeHandler());
     }
 }
