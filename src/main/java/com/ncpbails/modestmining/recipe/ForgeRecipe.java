@@ -20,16 +20,15 @@ import net.minecraftforge.common.util.RecipeMatcher;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ForgeRecipe implements Recipe<SimpleContainer> {
+public class ForgeRecipe extends AbstractForgeRecipe {
 
-    private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
     private final int cookTime;
     private final boolean isSimple;
 
     public ForgeRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int cookTime) {
-        this.id = id;
+        super(id, output, recipeItems, cookTime);
         this.output = output;
         this.recipeItems = recipeItems;
         this.cookTime = cookTime;
@@ -37,22 +36,8 @@ public class ForgeRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
         return Serializer.INSTANCE;
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return recipeItems;
-    }
-
-    public int getCookTime() {
-        return this.cookTime;
     }
 
     @Override

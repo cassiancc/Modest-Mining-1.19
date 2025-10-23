@@ -1,12 +1,12 @@
-package com.ncpbails.modestmining.integration;
+package com.ncpbails.modestmining.integration.jei;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
-import com.ncpbails.modestmining.recipe.ForgeShapedRecipe;
 import mezz.jei.api.constants.ModIds;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -22,13 +22,14 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedRecipe> {
-    public final static ResourceLocation UID = new ResourceLocation(ModestMining.MOD_ID, "forging_shaped");
+public class ForgingRecipeCategory implements IRecipeCategory<ForgeRecipe> {
+    public final static ResourceLocation UID = new ResourceLocation(ModestMining.MOD_ID, "forging");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(ModestMining.MOD_ID, "textures/gui/forge_gui_jei.png");
 
@@ -36,25 +37,25 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     private final IDrawable icon;
     private final int regularCookTime = 400;
 
-    public ForgingShapedRecipeCategory(IGuiHelper helper) {
+    public ForgingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.FORGE.get()));
     }
 
     @Override
-    public void draw(ForgeShapedRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(ForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         drawCookTime(recipe, guiGraphics, 50);
     }
 
     @Override
-    public void createRecipeExtras(IRecipeExtrasBuilder builder, ForgeShapedRecipe recipe, IFocusGroup focuses) {
+    public void createRecipeExtras(IRecipeExtrasBuilder builder, ForgeRecipe recipe, IFocusGroup focuses) {
         builder.addAnimatedRecipeArrow(recipe.getCookTime())
                 .setPosition(63, 4);
         builder.addAnimatedRecipeFlame(300)
                 .setPosition(66, 23);
     }
 
-    protected void drawCookTime(ForgeShapedRecipe recipe, GuiGraphics guiGraphics, int y) {
+    protected void drawCookTime(ForgeRecipe recipe, GuiGraphics guiGraphics, int y) {
         int cookTime = recipe.getCookTime();
         if (cookTime > 0) {
             int cookTimeSeconds = cookTime / 20;
@@ -67,13 +68,13 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     }
 
     @Override
-    public RecipeType<ForgeShapedRecipe> getRecipeType() {
-        return JEIModestMiningPlugin.FORGING_SHAPED_TYPE;
+    public RecipeType<ForgeRecipe> getRecipeType() {
+        return JEIModestMiningPlugin.FORGING_TYPE;
     }
 
     @Override
     public Component getTitle() {
-        return Component.translatable("recipe.modestmining.shaped_forging");
+        return Component.translatable("recipe.modestmining.shapeless_forging");
     }
 
     @Override
@@ -87,21 +88,25 @@ public class ForgingShapedRecipeCategory implements IRecipeCategory<ForgeShapedR
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ForgeShapedRecipe recipe, IFocusGroup focuses) {
-        int startX = 3;
-        int startY = 5;
-        int index = 0;
-
-        for (int y = 0; y < recipe.getHeight(); y++) {
-            for (int x = 0; x < recipe.getWidth(); x++) {
-                builder.addSlot(RecipeIngredientRole.INPUT, startX + x * 18, startY + y * 18)
-                        .addIngredients(recipe.getIngredients().get(index));
-                index++;
-            }
-        }
-
-        // Add output slot
-        //FIXME
+    public void setRecipe(IRecipeLayoutBuilder builder, ForgeRecipe recipe, IFocusGroup focuses) {
+        builder.addSlot(RecipeIngredientRole.INPUT, 3, 5).addIngredients(recipe.getIngredients().get(0));
+        if (recipe.getIngredients().size() > 1) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 21, 5).addIngredients(recipe.getIngredients().get(1));
+            if (recipe.getIngredients().size() > 2) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 39, 5).addIngredients(recipe.getIngredients().get(2));
+                if (recipe.getIngredients().size() > 3) {
+                    builder.addSlot(RecipeIngredientRole.INPUT, 3, 23).addIngredients(recipe.getIngredients().get(3));
+                    if (recipe.getIngredients().size() > 4) {
+                        builder.addSlot(RecipeIngredientRole.INPUT, 21, 23).addIngredients(recipe.getIngredients().get(4));
+                        if (recipe.getIngredients().size() > 5) {
+                            builder.addSlot(RecipeIngredientRole.INPUT, 39, 23).addIngredients(recipe.getIngredients().get(5));
+                            if (recipe.getIngredients().size() > 6) {
+                                builder.addSlot(RecipeIngredientRole.INPUT, 3, 41).addIngredients(recipe.getIngredients().get(6));
+                                if (recipe.getIngredients().size() > 7) {
+                                    builder.addSlot(RecipeIngredientRole.INPUT, 21, 41).addIngredients(recipe.getIngredients().get(7));
+                                    if (recipe.getIngredients().size() > 8) {
+                                        builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
+        }}}}}}}}
         builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getOutput());
     }
 }
