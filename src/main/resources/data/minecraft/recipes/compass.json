@@ -6,7 +6,7 @@
       "item": "minecraft:redstone"
     },
     "#": {
-      "tag": "modestmining:iron_pieces"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

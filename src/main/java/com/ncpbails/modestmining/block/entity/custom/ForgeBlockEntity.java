@@ -51,7 +51,9 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
-            resetProgress();
+            if (slot < 9) {
+                resetProgress();
+            }
         }
     };
 
@@ -227,8 +229,8 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
         if (!this.level.isClientSide) {
             var fuel = this.itemHandler.getStackInSlot(9).copy();
             if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
-                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
-                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
+                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING)+1;
+                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING)+1;
                 if (fuel.getCount() > 1) {
                     fuel.setCount(fuel.getCount()-1);
                     this.itemHandler.setStackInSlot(9, fuel);
