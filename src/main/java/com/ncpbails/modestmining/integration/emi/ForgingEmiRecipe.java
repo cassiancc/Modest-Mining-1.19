@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class ForgingEmiRecipe extends AbstractForgingRecipe {
 
     public ForgingEmiRecipe(ForgeRecipe recipe) {
-        super(recipe.getId(), getIngredients(recipe), recipe.getResultItem(), recipe.getCookTime());
+        super(recipe.getId(), getIngredients(recipe), recipe.getResultItem(Minecraft.getInstance().level.registryAccess()), recipe.getCookTime());
     }
 
     private static ArrayList<EmiIngredient> getIngredients(ForgeRecipe recipe) {

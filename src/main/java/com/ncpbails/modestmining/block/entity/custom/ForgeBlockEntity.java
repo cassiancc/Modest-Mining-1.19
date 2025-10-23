@@ -277,10 +277,10 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider {
             for (int i = 0; i < 9; ++i) {
                 entity.itemHandler.extractItem(i, 1, false);
             }
-            inventory.getItem(10).is(currentRecipe.getResultItem().getItem());
+            inventory.getItem(10).is(currentRecipe.getResultItem(entity.level.registryAccess()).getItem());
 
-            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem())));
+            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem(entity.level.registryAccess()).getItem(),
+                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem(entity.level.registryAccess()))));
 
             entity.resetProgress();
 

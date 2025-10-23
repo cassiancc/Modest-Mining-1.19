@@ -1,6 +1,5 @@
 package com.ncpbails.modestmining.integration.emi;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
 import com.ncpbails.modestmining.recipe.ForgeRecipe;
@@ -12,11 +11,6 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.WidgetHolder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 @EmiEntrypoint
@@ -29,8 +23,7 @@ public class EMIModestMiningPlugin implements EmiPlugin {
 
     private static EmiRenderable simplifiedRenderer(int u, int v) {
         return (draw, x, y, delta) -> {
-            RenderSystem.setShaderTexture(0, TEXTURE);
-            GuiComponent.blit(draw, x, y, u, v, 120, 60, 120, 60);
+            draw.blit(TEXTURE, x, y, u, v, 120, 60, 120, 60);
         };
     }
 

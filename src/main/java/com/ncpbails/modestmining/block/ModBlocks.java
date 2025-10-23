@@ -7,6 +7,7 @@ import com.ncpbails.modestmining.block.entity.custom.RockBlock;
 import com.ncpbails.modestmining.block.entity.custom.ShellBlock;
 import com.ncpbails.modestmining.item.ModItems;
 import joptsimple.internal.Rows;
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -85,13 +86,13 @@ public class ModBlocks {
 
 
     public static final RegistryObject<Block> FORGE = registerBlock("forge",
-            () -> new ForgeBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).lightLevel((blockState)->{
+            () -> new ForgeBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).lightLevel((blockState)->{
                 if (blockState.getValue(ForgeBlock.LIT)) {
                     return 15;
                 }
                 return 0;
             })
-            .strength(5.0f, 6.0f).requiresCorrectToolForDrops()), CreativeModeTab.TAB_DECORATIONS, false, 0);
+            .strength(5.0f, 6.0f).requiresCorrectToolForDrops()), CreativeModeTabs.FUNCTIONAL_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> COMPACT_AMETHYST_BLOCK = registerBlock("compact_amethyst_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK)), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
