@@ -1,13 +1,9 @@
 package com.ncpbails.modestmining.block;
 
 import com.ncpbails.modestmining.ModestMining;
-import com.ncpbails.modestmining.block.custom.BrushingBlock;
 import com.ncpbails.modestmining.block.custom.ForgeBlock;
-import com.ncpbails.modestmining.block.entity.custom.RockBlock;
 import com.ncpbails.modestmining.block.entity.custom.ShellBlock;
 import com.ncpbails.modestmining.item.ModItems;
-import joptsimple.internal.Rows;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -105,15 +101,10 @@ public class ModBlocks {
 
 
     public static final RegistryObject<Block> SUSPICIOUS_DIRT = registerBlock("suspicious_dirt",
-            () -> new BrushingBlock(BlockBehaviour.Properties.copy(Blocks.DIRT).noOcclusion()), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
+            () -> new BrushableBlock(Blocks.DIRT, BlockBehaviour.Properties.copy(Blocks.DIRT).noOcclusion(), SoundEvents.BRUSH_GENERIC, SoundEvents.BRUSH_GENERIC), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
 
-    public static final RegistryObject<Block> SUSPICIOUS_SAND = registerBlock("suspicious_sand",
-            () -> new BrushingBlock(BlockBehaviour.Properties.copy(Blocks.SAND).noOcclusion()), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
-
-    public static final RegistryObject<Block> SUSPICIOUS_GRAVEL = registerBlock("suspicious_gravel",
-            () -> new BrushingBlock(BlockBehaviour.Properties.copy(Blocks.GRAVEL).noOcclusion()), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
     public static final RegistryObject<Block> SUSPICIOUS_STONE = registerBlock("suspicious_stone",
-            () -> new BrushingBlock(BlockBehaviour.Properties.copy(Blocks.STONE).noOcclusion()), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
+            () -> new BrushableBlock(Blocks.STONE, BlockBehaviour.Properties.copy(Blocks.STONE).noOcclusion(), SoundEvents.BRUSH_GENERIC, SoundEvents.BRUSH_GENERIC), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> SHELL = registerBlock("shell",
             () -> new ShellBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).mapColor(MapColor.COLOR_GRAY)

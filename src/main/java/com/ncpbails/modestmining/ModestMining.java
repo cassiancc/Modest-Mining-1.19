@@ -106,7 +106,6 @@ public class ModestMining
             event.accept(ModItems.CLAM_SPAWN_EGG);
         }
         else if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
-            event.accept(ModItems.BRUSH);
             event.accept(ModItems.CHISEL);
             event.accept(ModItems.PRISMARITE_SWORD);
             event.accept(ModItems.PRISMARITE_AXE);

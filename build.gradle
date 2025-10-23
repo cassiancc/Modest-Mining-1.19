@@ -143,7 +143,7 @@ dependencies {
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     modCompileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    modLocalRuntime "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+//    modLocalRuntime "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
     // Required depndency for GeckoLib
     modImplementation("software.bernie.geckolib:geckolib-forge-1.20.1:${geckolib_version}")
 
@@ -152,6 +152,7 @@ dependencies {
 
     modCompileOnly("curse.maven:every-compat-628539:$everycompat_version")
     modLocalRuntime("curse.maven:everycompat-628539:$everycompat_version")
+    modLocalRuntime("curse.maven:moonlightlib-499980:7119907")
 }
 
 // Uncomment the lines below if you wish to configure mixin. The mixin file should be named modid.mixins.json.

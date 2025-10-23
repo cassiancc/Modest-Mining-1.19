@@ -136,8 +136,6 @@ public class ModItems {
     //        () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(ModFoods.ROSEGOLD_CARROT)));
 
     //TOOLS                                                                                                                            attack      speed
-    public static final RegistryObject<Item> BRUSH = ITEMS.register("brush", () -> new BrushItem(0f,0f, ModTiers.COPPER,
-            new Item.Properties().durability(450)));
 
     public static final RegistryObject<Item> CHISEL = ITEMS.register("chisel", () -> new ChiselItem(0f,0f, ModTiers.COPPER,
             new Item.Properties().durability(450)));
