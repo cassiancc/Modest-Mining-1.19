@@ -7,5 +7,14 @@
         "type": "event"
       }
     ]
+  },
+  "item.chisel.chiseling.generic": {
+    "subtitle": "modestmining.subtitles.item.chisel.chiseling.generic",
+    "sounds": [
+      {
+        "name": "item.brush.brushing.generic",
+        "type": "event"
+      }
+    ]
   }
 }

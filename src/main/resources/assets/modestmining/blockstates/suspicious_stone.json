@@ -1,15 +1,15 @@
 {
   "variants": {
-    "brushing=0": [
+    "dusted=0": [
       { "model": "modestmining:block/suspicious_stone0" }
     ],
-    "brushing=1": [
+    "dusted=1": [
       { "model": "modestmining:block/suspicious_stone1" }
     ],
-    "brushing=2": [
+    "dusted=2": [
       { "model": "modestmining:block/suspicious_stone2" }
     ],
-    "brushing=3": [
+    "dusted=3": [
       { "model": "modestmining:block/suspicious_stone3" }
     ]
   }

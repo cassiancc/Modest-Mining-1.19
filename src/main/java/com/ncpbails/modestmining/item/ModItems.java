@@ -2,15 +2,12 @@ package com.ncpbails.modestmining.item;
 
 import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.entity.ModEntityTypes;
-import com.ncpbails.modestmining.item.custom.tools.BrushItem;
 import com.ncpbails.modestmining.item.custom.tools.ChiselItem;
-import com.ncpbails.modestmining.item.custom.tools.HatchetItem;
 import com.ncpbails.modestmining.item.custom.tools.ModArmorItem;
 import com.ncpbails.modestmining.item.custom.weapons.GlaiveItem;
 import com.ncpbails.modestmining.item.custom.weapons.HammerItem;
 import com.ncpbails.modestmining.item.custom.weapons.KatanaItem;
 import com.ncpbails.modestmining.item.custom.weapons.MaceItem;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeSpawnEggItem;

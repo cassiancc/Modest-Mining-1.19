@@ -2,6 +2,7 @@ package com.ncpbails.modestmining;
 
 import com.mojang.logging.LogUtils;
 import com.ncpbails.modestmining.block.ModBlocks;
+import com.ncpbails.modestmining.block.client.ChiselableBlockEntityRenderer;
 import com.ncpbails.modestmining.block.entity.ModBlockEntities;
 import com.ncpbails.modestmining.effect.ModEffects;
 import com.ncpbails.modestmining.entity.ModEntityTypes;
@@ -28,6 +29,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -187,7 +189,7 @@ public class ModestMining
                         (p)-> pack,
                         new Pack.Info(Component.literal("Updated textures for the vanilla metals and tools"), 9, FeatureFlagSet.of()),
                         PackType.CLIENT_RESOURCES,
-                        Pack.Position.BOTTOM,
+                        Pack.Position.TOP,
                         false,
                         PackSource.BUILT_IN
                         ));
@@ -203,8 +205,14 @@ public class ModestMining
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-            EntityRenderers.register(ModEntityTypes.CLAM.get(), ClamRenderer::new);
             MenuScreens.register(ModMenuTypes.FORGE_MENU.get(), ForgeScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void onEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
+        {
+            event.registerEntityRenderer(ModEntityTypes.CLAM.get(), ClamRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.CHISELABLE_BLOCK_ENTITY.get(), ChiselableBlockEntityRenderer::new);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.ncpbails.modestmining.block.entity;
 
 import com.ncpbails.modestmining.ModestMining;
 import com.ncpbails.modestmining.block.ModBlocks;
+import com.ncpbails.modestmining.block.entity.custom.ChiselableBlockEntity;
 import com.ncpbails.modestmining.block.entity.custom.ForgeBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
@@ -15,12 +16,15 @@ public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ModestMining.MOD_ID);
 
+    public static final RegistryObject<BlockEntityType<ChiselableBlockEntity>> CHISELABLE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("brushing_block_entity", () ->
+                    BlockEntityType.Builder.of(ChiselableBlockEntity::new,
+                           ModBlocks.SUSPICIOUS_STONE.get()).build(null));
+
     public static final RegistryObject<BlockEntityType<ForgeBlockEntity>> FORGE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("forge_block_entity", () ->
                     BlockEntityType.Builder.of(ForgeBlockEntity::new,
                             ModBlocks.FORGE.get()).build(null));
-
-
 
 
     public static void register(IEventBus eventBus) {

@@ -1,9 +1,11 @@
 package com.ncpbails.modestmining.block;
 
 import com.ncpbails.modestmining.ModestMining;
+import com.ncpbails.modestmining.block.custom.ChiselableBlock;
 import com.ncpbails.modestmining.block.custom.ForgeBlock;
 import com.ncpbails.modestmining.block.entity.custom.ShellBlock;
 import com.ncpbails.modestmining.item.ModItems;
+import com.ncpbails.modestmining.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -104,7 +106,7 @@ public class ModBlocks {
             () -> new BrushableBlock(Blocks.DIRT, BlockBehaviour.Properties.copy(Blocks.DIRT).noOcclusion(), SoundEvents.BRUSH_GENERIC, SoundEvents.BRUSH_GENERIC), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> SUSPICIOUS_STONE = registerBlock("suspicious_stone",
-            () -> new BrushableBlock(Blocks.STONE, BlockBehaviour.Properties.copy(Blocks.STONE).noOcclusion(), SoundEvents.BRUSH_GENERIC, SoundEvents.BRUSH_GENERIC), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
+            () -> new ChiselableBlock(Blocks.STONE, BlockBehaviour.Properties.copy(Blocks.STONE).noOcclusion(), ModSounds.CHISEL_GENERIC.get(), ModSounds.CHISEL_GENERIC.get()), CreativeModeTabs.BUILDING_BLOCKS, false, 0);
 
     public static final RegistryObject<Block> SHELL = registerBlock("shell",
             () -> new ShellBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).mapColor(MapColor.COLOR_GRAY)
