@@ -1,6 +1,6 @@
-package com.ncpbails.modestmining.datagen;
+package com.baisylia.modestmining.datagen;
 
-import com.ncpbails.modestmining.ModestMining;
+import com.baisylia.modestmining.ModestMining;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;

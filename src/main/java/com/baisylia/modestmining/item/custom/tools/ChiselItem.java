@@ -1,8 +1,8 @@
 package com.baisylia.modestmining.item.custom.tools;
 
-import com.ncpbails.modestmining.block.custom.ChiselableBlock;
-import com.ncpbails.modestmining.block.entity.custom.ChiselableBlockEntity;
-import com.ncpbails.modestmining.sounds.ModSounds;
+import com.baisylia.modestmining.block.custom.ChiselableBlock;
+import com.baisylia.modestmining.block.entity.custom.ChiselableBlockEntity;
+import com.baisylia.modestmining.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;

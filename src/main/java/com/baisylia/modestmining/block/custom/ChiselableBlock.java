@@ -1,6 +1,6 @@
-package com.ncpbails.modestmining.block.custom;
+package com.baisylia.modestmining.block.custom;
 
-import com.ncpbails.modestmining.block.entity.custom.ChiselableBlockEntity;
+import com.baisylia.modestmining.block.entity.custom.ChiselableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;

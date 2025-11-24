@@ -1,5 +1,6 @@
 package com.baisylia.modestmining;
 
+import com.baisylia.modestmining.block.client.ChiselableBlockEntityRenderer;
 import com.mojang.logging.LogUtils;
 import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.block.entity.ModBlockEntities;

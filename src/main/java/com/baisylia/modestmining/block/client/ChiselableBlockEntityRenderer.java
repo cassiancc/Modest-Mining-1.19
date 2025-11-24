@@ -1,8 +1,8 @@
-package com.ncpbails.modestmining.block.client;
+package com.baisylia.modestmining.block.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.ncpbails.modestmining.block.entity.custom.ChiselableBlockEntity;
+import com.baisylia.modestmining.block.entity.custom.ChiselableBlockEntity;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

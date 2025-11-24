@@ -1,6 +1,5 @@
 package com.baisylia.modestmining.integration.emi;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.baisylia.modestmining.ModestMining;
 import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.recipe.ForgeRecipe;
@@ -12,7 +11,6 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
 
 @EmiEntrypoint

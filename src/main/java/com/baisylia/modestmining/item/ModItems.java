@@ -2,7 +2,6 @@ package com.baisylia.modestmining.item;
 
 import com.baisylia.modestmining.ModestMining;
 import com.baisylia.modestmining.entity.ModEntityTypes;
-import com.baisylia.modestmining.item.custom.tools.BrushItem;
 import com.baisylia.modestmining.item.custom.tools.ChiselItem;
 import com.baisylia.modestmining.item.custom.tools.ModArmorItem;
 import com.baisylia.modestmining.item.custom.weapons.GlaiveItem;

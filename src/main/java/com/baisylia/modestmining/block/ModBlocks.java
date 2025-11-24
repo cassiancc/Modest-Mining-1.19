@@ -1,16 +1,16 @@
 package com.baisylia.modestmining.block;
 
 import com.baisylia.modestmining.ModestMining;
-import com.baisylia.modestmining.block.custom.BrushingBlock;
+import com.baisylia.modestmining.block.custom.ChiselableBlock;
 import com.baisylia.modestmining.block.custom.ForgeBlock;
 import com.baisylia.modestmining.block.entity.custom.ShellBlock;
 import com.baisylia.modestmining.item.ModItems;
+import com.baisylia.modestmining.sounds.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;

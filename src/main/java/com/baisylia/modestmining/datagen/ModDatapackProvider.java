@@ -1,8 +1,8 @@
-package com.ncpbails.modestmining.datagen;
+package com.baisylia.modestmining.datagen;
 
-import com.ncpbails.modestmining.ModestMining;
-import com.ncpbails.modestmining.world.feature.ModConfiguredFeatures;
-import com.ncpbails.modestmining.world.feature.ModPlacedFeatures;
+import com.baisylia.modestmining.ModestMining;
+import com.baisylia.modestmining.world.feature.ModConfiguredFeatures;
+import com.baisylia.modestmining.world.feature.ModPlacedFeatures;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

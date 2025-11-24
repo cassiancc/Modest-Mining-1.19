@@ -1,7 +1,7 @@
-package com.ncpbails.modestmining.block.entity.custom;
+package com.baisylia.modestmining.block.entity.custom;
 
 import com.mojang.logging.LogUtils;
-import com.ncpbails.modestmining.block.custom.ChiselableBlock;
+import com.baisylia.modestmining.block.custom.ChiselableBlock;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Objects;
 import javax.annotation.Nullable;

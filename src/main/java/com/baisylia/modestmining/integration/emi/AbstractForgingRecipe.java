@@ -28,7 +28,7 @@ public abstract class AbstractForgingRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
