@@ -248,8 +248,8 @@ public class MMEveryCompatModule extends SimpleModule {
     public boolean isEntryAlreadyRegistered(String entrySetId, String blockId, BlockType blockType, Registry<?> registry) {
 
         if (blockType instanceof WoodType wt) {
-            if
-            (blockId.contains("boards") && !blockType.isVanilla()) return false;
+            if (wt.equals(VanillaWoodTypes.CHERRY)) return false;
+            if (blockId.contains("boards") && !blockType.isVanilla()) return false;
         }
 
         return super.isEntryAlreadyRegistered(entrySetId, blockId, blockType, registry);
