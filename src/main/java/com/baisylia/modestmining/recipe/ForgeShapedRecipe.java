@@ -88,7 +88,7 @@ public class ForgeShapedRecipe extends AbstractForgeRecipe implements IShapedRec
         return true;
     }
     @Override
-    public ItemStack assemble(Container container) {
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return output;
     }
 
@@ -315,7 +315,7 @@ public class ForgeShapedRecipe extends AbstractForgeRecipe implements IShapedRec
                 ingredient.toNetwork(buf);
             }
 
-            buf.writeItem(recipe.getOutput());
+            buf.writeItem(recipe.output);
             buf.writeVarInt(recipe.cookTime);
         }
     }

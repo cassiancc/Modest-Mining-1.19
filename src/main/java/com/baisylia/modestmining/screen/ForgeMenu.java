@@ -34,7 +34,7 @@ public class ForgeMenu extends RecipeBookMenu<Container> {
         super(ModMenuTypes.FORGE_MENU.get(), pContainerId);
         checkContainerSize(pPlayerInventory, 11);
         blockEntity = ((ForgeBlockEntity) entity);
-        this.level = pPlayerInventory.player.level;
+        this.level = pPlayerInventory.player.level();
         this.data = data;
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {

@@ -1,7 +1,6 @@
 package com.baisylia.modestmining.recipe;
 
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 public enum ForgingBookCategory implements StringRepresentable {
 
@@ -18,7 +17,7 @@ public enum ForgingBookCategory implements StringRepresentable {
     }
 
     @Override
-    public @NotNull String getSerializedName() {
+    public String getSerializedName() {
         return this.name;
     }
 

@@ -2,6 +2,7 @@ package com.baisylia.modestmining.screen;
 
 import com.baisylia.modestmining.ModestMining;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class ForgingRecipeBookComponent extends RecipeBookComponent {
 			Ingredient.of(AbstractFurnaceBlockEntity.getFuel().keySet().stream().map(ItemStack::new));
 
 	@Override
-	protected @NotNull Component getRecipeFilterName() {
+	protected Component getRecipeFilterName() {
 		return Component.translatable("gui.recipe_book.toggle_recipes.forgeable");
 	}
 
@@ -32,8 +32,8 @@ public class ForgingRecipeBookComponent extends RecipeBookComponent {
 	}
 
 	@Override
-	public void setupGhostRecipe(Recipe<?> recipe, @NotNull List<Slot> slots) {
-		ItemStack result = recipe.getResultItem();
+	public void setupGhostRecipe(Recipe<?> recipe, List<Slot> slots) {
+		ItemStack result = recipe.getResultItem(RegistryAccess.EMPTY);
 		this.ghostRecipe.setRecipe(recipe);
 		Slot resultSlot = slots.get(10);
 		this.ghostRecipe.addIngredient(Ingredient.of(result), resultSlot.x, resultSlot.y);

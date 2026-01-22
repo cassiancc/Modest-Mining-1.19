@@ -10,12 +10,12 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class ForgingEmiRecipe implements EmiRecipe {
     public ForgingEmiRecipe(AbstractForgeRecipe recipe) {
         this.id = recipe.getId();
         this.input = padIngredients(recipe);
-        this.output = EmiStack.of(recipe.getResultItem());
+        this.output = EmiStack.of(recipe.getResultItem(RegistryAccess.EMPTY));
         this.cookTime = recipe.getCookTime();
         this.shapeless = !(recipe instanceof IShapedRecipe);
     }
@@ -61,7 +61,7 @@ public class ForgingEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 

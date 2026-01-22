@@ -72,7 +72,7 @@ public class ForgeScreen extends AbstractContainerScreen<ForgeMenu> implements R
 	}
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics pPoseStack, int mouseX, int mouseY, float delta) {
 		this.renderBackground(pPoseStack);
 
 		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
@@ -89,9 +89,9 @@ public class ForgeScreen extends AbstractContainerScreen<ForgeMenu> implements R
     }
 
 	@Override
-	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics poseStack, int mouseX, int mouseY) {
 		super.renderLabels(poseStack, mouseX, mouseY);
-		this.font.draw(poseStack, this.playerInventoryTitle, 8, (this.imageHeight - 96 + 2), 4210752);
+		poseStack.drawString(font, this.playerInventoryTitle, 8, (this.imageHeight - 96 + 2), 4210752, false);
 	}
 
 	@Override

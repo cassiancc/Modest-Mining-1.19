@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -37,21 +38,36 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
     private final IDrawable background;
     private final IDrawable icon;
     private final int regularCookTime = 400;
+    private final LoadingCache<Integer, IDrawableAnimated> cachedArrows;
+    protected final IDrawableStatic staticFlame;
+    protected final IDrawableAnimated animatedFlame;
 
     public ForgingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.FORGE.get()));
+        this.cachedArrows = CacheBuilder.newBuilder()
+                .maximumSize(25)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public IDrawableAnimated load(Integer cookTime) {
+                        return helper.drawableBuilder(TEXTURE, 123, 0, 23, 18)
+                                .buildAnimated(cookTime, IDrawableAnimated.StartDirection.LEFT, false);
+                    }
+                });
+        staticFlame = helper.createDrawable(new ResourceLocation(ModIds.JEI_ID, "textures/gui/gui_vanilla.png"), 82, 114, 14, 14);
+        animatedFlame = helper.createAnimatedDrawable(staticFlame, 300, IDrawableAnimated.StartDirection.TOP, true);
+
     }
 
     @Override
-    public void draw(AbstractForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
+    public void draw(AbstractForgeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics poseStack, double mouseX, double mouseY) {
         animatedFlame.draw(poseStack, 66, 23);
         IDrawableAnimated arrow = getArrow(recipe);
         arrow.draw(poseStack, 63, 4);
         drawCookTime(recipe, poseStack, 50);
     }
 
-    protected void drawCookTime(AbstractForgeRecipe recipe, PoseStack poseStack, int y) {
+    protected void drawCookTime(AbstractForgeRecipe recipe, GuiGraphics guiGraphics, int y) {
         int cookTime = recipe.getCookTime();
         if (cookTime > 0) {
             int cookTimeSeconds = cookTime / 20;
@@ -78,7 +94,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
 
     @Override
     public Component getTitle() {
-        return Component.translatable("recipe.modestmining.shapeless_forging");
+        return Component.translatable("recipe.modestmining.forging");
     }
 
     @Override
@@ -111,6 +127,6 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
                                     if (recipe.getIngredients().size() > 8) {
                                         builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
         }}}}}}}}
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getOutput());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem(RegistryAccess.EMPTY));
     }
 }

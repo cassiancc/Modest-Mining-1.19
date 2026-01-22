@@ -73,7 +73,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
     }
 
     @Override
-    public ItemStack assemble(Container container) {
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return output;
     }
 
