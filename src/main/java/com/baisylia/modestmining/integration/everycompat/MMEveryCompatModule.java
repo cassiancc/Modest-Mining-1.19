@@ -249,6 +249,7 @@ public class MMEveryCompatModule extends SimpleModule {
 
         if (blockType instanceof WoodType wt) {
             if (wt.equals(VanillaWoodTypes.CHERRY)) return false;
+            if (wt.equals(VanillaWoodTypes.BAMBOO)) return false;
             if (blockId.contains("boards") && !blockType.isVanilla()) return false;
         }
 
