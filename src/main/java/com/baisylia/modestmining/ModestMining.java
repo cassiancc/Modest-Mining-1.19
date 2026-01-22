@@ -1,6 +1,7 @@
 package com.baisylia.modestmining;
 
 import com.baisylia.modestmining.block.client.ChiselableBlockEntityRenderer;
+import com.baisylia.modestmining.recipe.ModRecipeCategories;
 import com.mojang.logging.LogUtils;
 import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.block.entity.ModBlockEntities;
@@ -31,6 +32,10 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -56,6 +61,8 @@ public class ModestMining
 {
     public static final String MOD_ID = "modestmining";
     private static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final RecipeBookType FORGING_RECIPE_BOOK_TYPE = RecipeBookType.create("FORGING");
 
     public ModestMining()
     {
@@ -206,6 +213,11 @@ public class ModestMining
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {
+		@SubscribeEvent
+		public static void onRegisterRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
+			ModRecipeCategories.init(event);
+		}
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {

@@ -9,7 +9,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -25,8 +25,8 @@ public class ForgeRecipe extends AbstractForgeRecipe {
     private final int cookTime;
     private final boolean isSimple;
 
-    public ForgeRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int cookTime) {
-        super(id, output, recipeItems, cookTime);
+    public ForgeRecipe(ResourceLocation id, String group, ForgingBookCategory category, ItemStack output, NonNullList<Ingredient> recipeItems, int cookTime) {
+        super(id, group, category, output, recipeItems, cookTime);
         this.output = output;
         this.recipeItems = recipeItems;
         this.cookTime = cookTime;
@@ -39,7 +39,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
     }
 
     @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
+    public boolean matches(Container pContainer, Level pLevel) {
         // Check if output slot is already occupied with a different item
         ItemStack outputSlot = pContainer.getItem(10);
         if (!outputSlot.isEmpty() && !ItemStack.isSameItem(this.getResultItem(pLevel.registryAccess()), outputSlot)) {
@@ -73,7 +73,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer container, RegistryAccess registryAccess) {
+    public ItemStack assemble(Container container) {
         return output;
     }
 
@@ -89,17 +89,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return Type.INSTANCE;
-    }
-
-    public ItemStack getOutput() {
-        return output;
-    }
-
-    public static class Type implements RecipeType<ForgeRecipe> {
-        private Type() { }
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "forging";
+        return ModRecipes.FORGING_TYPE.get();
     }
 
 
@@ -107,6 +97,9 @@ public class ForgeRecipe extends AbstractForgeRecipe {
         public static final Serializer INSTANCE = new Serializer();
         private static final ResourceLocation NAME = new ResourceLocation("modestmining", "forging");
         public ForgeRecipe fromJson(ResourceLocation resourceLocation, JsonObject json) {
+            String group = GsonHelper.getAsString(json, "group", "");
+            ForgingBookCategory category = ForgingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null));
+            if (category == null) category = ForgingBookCategory.MISC;
             NonNullList<Ingredient> inputs = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
             if (inputs.isEmpty()) {
                 throw new JsonParseException("No ingredients for forging recipe");
@@ -115,7 +108,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
             } else {
                 ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
                 int cookTimeIn = GsonHelper.getAsInt(json, "cooktime", 200);
-                return new ForgeRecipe(resourceLocation, itemstack, inputs,  cookTimeIn);
+                return new ForgeRecipe(resourceLocation, group, category, itemstack, inputs,  cookTimeIn);
             }
         }
 
@@ -133,6 +126,8 @@ public class ForgeRecipe extends AbstractForgeRecipe {
         }
         @Override
         public ForgeRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+            String group = buf.readUtf();
+            ForgingBookCategory category = buf.readEnum(ForgingBookCategory.class);
             int i = buf.readVarInt();
             NonNullList<Ingredient> inputs = NonNullList.withSize(i, Ingredient.EMPTY);
 
@@ -142,11 +137,13 @@ public class ForgeRecipe extends AbstractForgeRecipe {
 
             ItemStack itemstack = buf.readItem();
             int cookTimeIn = buf.readVarInt();
-            return new ForgeRecipe(id, itemstack, inputs, cookTimeIn);
+            return new ForgeRecipe(id, group, category, itemstack, inputs, cookTimeIn);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, ForgeRecipe recipe) {
+            buf.writeUtf(recipe.group);
+            buf.writeEnum(recipe.category);
             buf.writeVarInt(recipe.recipeItems.size());
 
             for(Ingredient ingredient : recipe.getIngredients()) {
