@@ -24,8 +24,6 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ModestMining.MOD_ID);
 
     //Materials
-    public static final RegistryObject<Item> PLANK = ITEMS.register("plank", () -> new Item(new Item.Properties()){
-        @Override public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {return 50;}});
 
     //public static final RegistryObject<Item> ROCKS = ITEMS.register("rocks", () -> new Item(new Item.Properties()));
 
