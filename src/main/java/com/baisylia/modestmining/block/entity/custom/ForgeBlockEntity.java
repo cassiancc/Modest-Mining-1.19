@@ -3,6 +3,7 @@ package com.baisylia.modestmining.block.entity.custom;
 import com.baisylia.modestmining.block.custom.ForgeBlock;
 import com.baisylia.modestmining.block.entity.ModBlockEntities;
 import com.baisylia.modestmining.recipe.AbstractForgeRecipe;
+import com.baisylia.modestmining.recipe.ForgeFuelManager;
 import com.baisylia.modestmining.recipe.ModRecipes;
 import com.baisylia.modestmining.screen.ForgeMenu;
 import net.minecraft.core.BlockPos;
@@ -19,13 +20,10 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,20 +35,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-import static com.baisylia.modestmining.block.custom.ForgeBlock.LIT;
-
 public class ForgeBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, StackedContentsCompatible {
 
+    private static final int[] INGREDIENT_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     protected final ContainerData data;
+    private final RecipeManager.CachedCheck<Container, AbstractForgeRecipe> quickCheck = RecipeManager.createCheck(ModRecipes.FORGING_TYPE.get());
+    LazyOptional<? extends IItemHandler>[] handlers =
+            SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
     private int progress = 0;
     private int maxProgress = 72;
     private int litTime = 0;
     private int fuelAmount = 0;
-    private static final int[] INGREDIENT_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-    static int countOutput = 1;
+    private int currentFuelTier = 0;
     private ContainerOpenersCounter openersCounter;
     private AbstractForgeRecipe currentRecipe = null;
-
     private final ItemStackHandler itemHandler = new ItemStackHandler(11) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -60,9 +58,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
             }
         }
     };
-
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-    private final RecipeManager.CachedCheck<Container, AbstractForgeRecipe> quickCheck = RecipeManager.createCheck(ModRecipes.FORGING_TYPE.get());
 
     public ForgeBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(ModBlockEntities.FORGE_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
@@ -73,22 +69,166 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
                     case 1 -> ForgeBlockEntity.this.maxProgress;
                     case 2 -> ForgeBlockEntity.this.litTime;
                     case 3 -> ForgeBlockEntity.this.fuelAmount;
+                    case 4 -> ForgeBlockEntity.this.currentFuelTier;
                     default -> 0;
                 };
             }
 
             public void set(int index, int value) {
-                switch(index) {
-                    case 0: ForgeBlockEntity.this.progress = value; break;
-                    case 1: ForgeBlockEntity.this.maxProgress = value; break;
-                    case 2: ForgeBlockEntity.this.litTime = value; break;
+                switch (index) {
+                    case 0:
+                        ForgeBlockEntity.this.progress = value;
+                        break;
+                    case 1:
+                        ForgeBlockEntity.this.maxProgress = value;
+                        break;
+                    case 2:
+                        ForgeBlockEntity.this.litTime = value;
+                        break;
+                    case 3:
+                        ForgeBlockEntity.this.fuelAmount = value;
+                        break;
+                    case 4:
+                        ForgeBlockEntity.this.currentFuelTier = value;
+                        break;
                 }
             }
 
             public int getCount() {
-                return 4;
+                return 5;
             }
         };
+    }
+
+    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, ForgeBlockEntity pBlockEntity) {
+        boolean wasLit = pBlockEntity.litTime > 0;
+        if (pBlockEntity.litTime > 0) {
+            pBlockEntity.litTime--;
+        } else {
+            pBlockEntity.litTime = 0;
+        }
+
+        if (hasRecipe(pBlockEntity)) {
+            pBlockEntity.progress++;
+            pBlockEntity.setChanged(pLevel, pPos, pState, true);
+            if (pBlockEntity.progress >= pBlockEntity.maxProgress) {
+                craftItem(pBlockEntity);
+            }
+        } else {
+            pBlockEntity.resetProgress();
+            if (wasLit && pBlockEntity.litTime <= 0) {
+                pBlockEntity.setChanged(pLevel, pPos, pState, false);
+            }
+        }
+    }
+
+    private static boolean hasRecipe(ForgeBlockEntity entity) {
+        Level level = entity.level;
+        BlockPos pos = entity.getBlockPos();
+
+        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
+
+        Optional<AbstractForgeRecipe> recipeMatch = entity.quickCheck.getRecipeFor(inventory, level);
+
+        if (recipeMatch.isPresent()) {
+            ItemStack result = recipeMatch.get().getResultItem();
+            if (canInsertAmountIntoOutputSlot(inventory, result)) {
+                entity.currentRecipe = recipeMatch.get();
+                return startCraftIfFueled(entity, pos, level, recipeMatch.get().getCookTime());
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory, ItemStack output) {
+        ItemStack currentOutput = inventory.getItem(10);
+
+        if (currentOutput.isEmpty()) {
+            return true;
+        }
+
+        if (!currentOutput.is(output.getItem())) {
+            return false;
+        }
+
+        return currentOutput.getCount() + output.getCount() <= currentOutput.getMaxStackSize();
+    }
+
+    static boolean startCraftIfFueled(ForgeBlockEntity entity, BlockPos pos, Level level, int progress) {
+        int requiredTier = entity.currentRecipe != null ? entity.currentRecipe.getFuelTier() : 0;
+        if (!isFueledWithTier(entity, pos, level, requiredTier)) {
+            if (!entity.burnFuel(requiredTier))
+                return false;
+        }
+        entity.maxProgress = progress;
+        return true;
+    }
+
+    static boolean isFueledWithTier(ForgeBlockEntity entity, BlockPos pos, Level level, int minTier) {
+        if (level.isClientSide) return false;
+        if (entity.litTime > 0 && entity.currentFuelTier >= minTier) {
+            entity.setChanged(level, pos, entity.getBlockState(), true);
+            return true;
+        } else {
+            if (entity.litTime <= 0) {
+                entity.setChanged(level, pos, entity.getBlockState(), false);
+            }
+            return false;
+        }
+    }
+
+    static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
+        if (level.isClientSide) return false;
+        if (entity.litTime > 0) {
+            entity.setChanged(level, pos, entity.getBlockState(), true);
+            return true;
+        } else {
+            entity.setChanged(level, pos, entity.getBlockState(), false);
+            return false;
+        }
+    }
+
+    private static void craftItem(ForgeBlockEntity entity) {
+
+        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
+
+        var currentRecipe = entity.currentRecipe;
+        if (currentRecipe != null) {
+            for (int i = 0; i < 9; ++i) {
+                ItemStack slotStack = entity.itemHandler.getStackInSlot(i);
+                if (slotStack.hasCraftingRemainingItem()) {
+                    Direction direction = entity.getBlockState().getValue(ForgeBlock.FACING).getCounterClockWise();
+                    double x = (double) entity.worldPosition.getX() + 0.5 + (double) direction.getStepX() * 0.25;
+                    double y = (double) entity.worldPosition.getY() + 0.7;
+                    double z = (double) entity.worldPosition.getZ() + 0.5 + (double) direction.getStepZ() * 0.25;
+                    spawnItemEntity(entity.level, entity.itemHandler.getStackInSlot(i).getCraftingRemainingItem(), x, y, z, (float) direction.getStepX() * 0.08F, 0.25, (float) direction.getStepZ() * 0.08F);
+                }
+            }
+
+            for (int i = 0; i < 9; ++i) {
+                entity.itemHandler.extractItem(i, 1, false);
+            }
+            inventory.getItem(10).is(currentRecipe.getResultItem().getItem());
+
+            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem().getItem(),
+                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem())));
+
+            entity.resetProgress();
+
+        }
+    }
+
+    public static void spawnItemEntity(Level level, ItemStack stack, double x, double y, double z, double xMotion, double yMotion, double zMotion) {
+        ItemEntity entity = new ItemEntity(level, x, y, z, stack);
+        entity.setDeltaMovement(xMotion, yMotion, zMotion);
+        level.addFreshEntity(entity);
     }
 
     @Override
@@ -101,9 +241,6 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
         return new ForgeMenu(pContainerId, pInventory, this, this.data);
     }
-
-   LazyOptional<? extends IItemHandler>[] handlers =
-            SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
     @Nonnull
     @Override
@@ -130,7 +267,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
     }
 
     @Override
-    public void invalidateCaps()  {
+    public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
     }
@@ -142,6 +279,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         tag.putInt("forge.lit_time", litTime);
         tag.putInt("forge.max_progress", maxProgress);
         tag.putInt("forge.fuel_amount", fuelAmount);
+        tag.putInt("forge.fuel_tier", currentFuelTier);
         super.saveAdditional(tag);
     }
 
@@ -153,6 +291,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         litTime = nbt.getInt("forge.lit_time");
         maxProgress = nbt.getInt("forge.max_progress");
         fuelAmount = nbt.getInt("forge.fuel_amount");
+        currentFuelTier = nbt.getInt("forge.fuel_tier");
     }
 
     public void drops() {
@@ -164,137 +303,36 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, ForgeBlockEntity pBlockEntity) {
-
-
-        if (isFueled(pBlockEntity, pPos, pLevel)) {
-            pBlockEntity.litTime--;
-        } else {
-            pBlockEntity.litTime = 0;
-        }
-
-        if (hasRecipe(pBlockEntity)) {
-            pBlockEntity.progress++;
-            pBlockEntity.setChanged(pLevel, pPos, pState, true);
-            if (pBlockEntity.progress == pBlockEntity.maxProgress) {
-                craftItem(pBlockEntity);
-            }
-        } else {
-            pBlockEntity.resetProgress();
-        }
-    }
-
     private void setChanged(Level pLevel, BlockPos pPos, BlockState pState, boolean b) {
-        pLevel.setBlock(pPos, pState.setValue(LIT, b), 3);
+        pLevel.setBlock(pPos, pState.setValue(ForgeBlock.LIT, b), 3);
         super.setChanged();
     }
 
-    private static boolean hasRecipe(ForgeBlockEntity entity) {
-        Level level = entity.level;
-        BlockPos pos = entity.getBlockPos();
-
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-
-        if (!inventory.getItem(10).isEmpty() && !inventory.getItem(10).isStackable()) {
-            return false;
-        }
-
-        if (entity.currentRecipe != null) {
-            return startCraftIfFueled(entity, pos, level, entity.currentRecipe.getCookTime());
-        }
-
-        // Check for ForgeRecipe
-        Optional<AbstractForgeRecipe> recipeMatch = entity.quickCheck.getRecipeFor(inventory, level);
-        if (recipeMatch.isPresent()) {
-            entity.currentRecipe = recipeMatch.get();
-            return startCraftIfFueled(entity, pos, level, recipeMatch.get().getCookTime());
-        }
-        entity.currentRecipe = null;
-        return false;
-    }
-
-    static boolean startCraftIfFueled(ForgeBlockEntity entity, BlockPos pos, Level level, int progress) {
-        if (!isFueled(entity, pos, level)) {
-            if (!entity.burnFuel())
-                return false;
-        }
-        entity.maxProgress = progress;
-        return true;
-    }
-
-    static boolean isFueled(ForgeBlockEntity entity, BlockPos pos, Level level) {
-        if (level.isClientSide) return false;
-        if (entity.litTime > 0) {
-            entity.setChanged(level, pos, entity.getBlockState(), true);
-            return true;
-        }
-        else {
-            entity.setChanged(level, pos, entity.getBlockState(), false);
-            return false;
-        }
-    }
-
-    private boolean burnFuel() {
+    private boolean burnFuel(int minTier) {
         if (!this.level.isClientSide) {
-            var fuel = this.itemHandler.getStackInSlot(9).copy();
-            if (AbstractFurnaceBlockEntity.isFuel(fuel) && this.litTime == 0) {
-                this.fuelAmount = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
-                this.litTime = ForgeHooks.getBurnTime(fuel, RecipeType.BLASTING);
-                if (fuel.getCount() > 1) {
-                    fuel.setCount(fuel.getCount()-1);
-                    this.itemHandler.setStackInSlot(9, fuel);
-                } else {
-                    this.itemHandler.setStackInSlot(9, fuel.getCraftingRemainingItem());
+            ItemStack fuel = this.itemHandler.getStackInSlot(9);
+            if (!fuel.isEmpty()) {
+                ForgeFuelManager.FuelInfo info = ForgeFuelManager.getFuelInfo(fuel);
+                if (info != null && info.tier() >= minTier && info.burnTime() > 0) {
+                    this.fuelAmount = info.burnTime();
+                    this.litTime = info.burnTime();
+                    this.currentFuelTier = info.tier();
+                    if (fuel.getCount() > 1) {
+                        ItemStack remainder = fuel.copy();
+                        remainder.shrink(1);
+                        this.itemHandler.setStackInSlot(9, remainder);
+                    } else {
+                        this.itemHandler.setStackInSlot(9, fuel.getCraftingRemainingItem());
+                    }
+                    this.setChanged();
+                    return true;
                 }
-                return true;
             }
         }
         return false;
     }
 
-    private static void craftItem(ForgeBlockEntity entity) {
-
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-
-        var currentRecipe = entity.currentRecipe;
-        if (currentRecipe != null) {
-            for(int i = 0; i < 9; ++i) {
-                ItemStack slotStack = entity.itemHandler.getStackInSlot(i);
-                if (slotStack.hasCraftingRemainingItem()) {
-                    Direction direction = entity.getBlockState().getValue(ForgeBlock.FACING).getCounterClockWise();
-                    double x = (double)entity.worldPosition.getX() + 0.5 + (double)direction.getStepX() * 0.25;
-                    double y = (double)entity.worldPosition.getY() + 0.7;
-                    double z = (double)entity.worldPosition.getZ() + 0.5 + (double)direction.getStepZ() * 0.25;
-                    spawnItemEntity(entity.level, entity.itemHandler.getStackInSlot(i).getCraftingRemainingItem(), x, y, z, (float)direction.getStepX() * 0.08F, 0.25, (float)direction.getStepZ() * 0.08F);
-                }
-            }
-
-            for (int i = 0; i < 9; ++i) {
-                entity.itemHandler.extractItem(i, 1, false);
-            }
-            inventory.getItem(10).is(currentRecipe.getResultItem(entity.level.registryAccess()).getItem());
-
-            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem(entity.level.registryAccess()).getItem(),
-                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem(entity.level.registryAccess()))));
-
-            entity.resetProgress();
-
-        }
-    }
-    public static void spawnItemEntity(Level level, ItemStack stack, double x, double y, double z, double xMotion, double yMotion, double zMotion) {
-        ItemEntity entity = new ItemEntity(level, x, y, z, stack);
-        entity.setDeltaMovement(xMotion, yMotion, zMotion);
-        level.addFreshEntity(entity);
-    }
-
-    private int getTheCount (ItemStack itemIn) {
+    private int getTheCount(ItemStack itemIn) {
         return itemIn.getCount();
     }
 
@@ -317,7 +355,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         if (slot == 10) {
             return false;
         } else if (slot == 9) {
-            return ForgeHooks.getBurnTime(itemStack, RecipeType.BLASTING) > 0;
+            return ForgeFuelManager.isFuel(itemStack);
         } else {
             return true;
         }
@@ -330,7 +368,10 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
-        return true;
+        if (direction == Direction.DOWN && slot == 10) {
+            return true;
+        }
+        return direction != Direction.UP && slot == 9 && !ForgeFuelManager.isFuel(itemStack);
     }
 
     @Override
@@ -340,7 +381,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
 
     @Override
     public boolean isEmpty() {
-        for(int i = 0; i < this.itemHandler.getSlots(); ++i) {
+        for (int i = 0; i < this.itemHandler.getSlots(); ++i) {
             ItemStack itemStack = this.itemHandler.getStackInSlot(i);
             if (!itemStack.isEmpty()) {
                 return false;
@@ -374,7 +415,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         if (this.level.getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) <= 64.0D;
+            return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
         }
     }
 
@@ -392,5 +433,4 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
             pHelper.accountStack(stack);
         }
     }
-
 }

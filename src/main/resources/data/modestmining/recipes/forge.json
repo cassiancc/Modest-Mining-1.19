@@ -1,4 +1,5 @@
 {
+  "conditions": [{ "type": "modestmining:config_enabled", "feature": "not_forge_uses_aluminium" }],
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "III",

@@ -1,0 +1,16 @@
+{
+  "type": "modestmining:forging",
+  "cooktime": 144,
+  "ingredients": [
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "result": {
+    "item": "modestmining:rosegold_ingot",
+    "count": 2
+  }
+}

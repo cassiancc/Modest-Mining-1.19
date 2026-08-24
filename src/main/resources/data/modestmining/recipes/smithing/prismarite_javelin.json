@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "modestmining:diamond_javelin"
+  },
+  "addition": {
+    "item": "modestmining:prismarite_ingot"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  },
+  "result": {
+    "item": "modestmining:prismarite_javelin"
+  }
+}

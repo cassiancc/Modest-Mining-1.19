@@ -18,6 +18,27 @@ public class ModSounds {
             () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "block.forge.crackle")));
     public static final RegistryObject<SoundEvent> CHISEL_GENERIC = SOUND_EVENTS.register("chisel_generic",  ()-> SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "item.chisel.chiseling.generic")));
 
+    public static final RegistryObject<SoundEvent> JAVELIN_THROW = SOUND_EVENTS.register("javelin_throw",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.throw")));
+
+    public static final RegistryObject<SoundEvent> JAVELIN_THROW_CRUDE = SOUND_EVENTS.register("javelin_throw_crude",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.throw_crude")));
+
+    public static final RegistryObject<SoundEvent> JAVELIN_HIT_GROUND = SOUND_EVENTS.register("javelin_hit_ground",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.hit_ground")));
+
+    public static final RegistryObject<SoundEvent> JAVELIN_HIT_GROUND_CRUDE = SOUND_EVENTS.register("javelin_hit_ground_crude",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.hit_ground_crude")));
+
+    public static final RegistryObject<SoundEvent> JAVELIN_HIT = SOUND_EVENTS.register("javelin_hit",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.hit")));
+
+    public static final RegistryObject<SoundEvent> JAVELIN_RETURN = SOUND_EVENTS.register("javelin_return",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.javelin.return")));
+
+    public static final RegistryObject<SoundEvent> CRITICAL_PIERCE = SOUND_EVENTS.register("critical_pierce",
+            () -> new SoundEvent(new ResourceLocation(MOD_ID, "item.critical_pierce")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

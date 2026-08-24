@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "modestmining:config_enabled",
+      "feature": "not_spyglass_uses_gold"
+    }
+  ],
   "type": "modestmining:forging_shaped",
   "category": "equipment",
   "cooktime": 144,
@@ -15,9 +21,6 @@
     "X",
     "X"
   ],
-  "fuel": {
-    "item": "modestmining:coke"
-  },
   "result": {
     "item": "minecraft:spyglass"
   }

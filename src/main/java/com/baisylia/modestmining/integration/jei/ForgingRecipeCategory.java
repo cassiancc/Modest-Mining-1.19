@@ -1,5 +1,7 @@
 package com.baisylia.modestmining.integration.jei;
 
+import com.baisylia.modestmining.ModestMining;
+import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.recipe.AbstractForgeRecipe;
 import com.baisylia.modestmining.recipe.ForgeShapedRecipe;
 import com.google.common.cache.CacheBuilder;
@@ -33,17 +35,17 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.List;
+
 public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(ModestMining.MOD_ID, "forging");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(ModestMining.MOD_ID, "textures/gui/forge_gui_jei.png");
-
-    private final IDrawable background;
-    private final IDrawable icon;
-    private final int regularCookTime = 400;
-    private final LoadingCache<Integer, IDrawableAnimated> cachedArrows;
     protected final IDrawableStatic staticFlame;
     protected final IDrawableAnimated animatedFlame;
+    private final IDrawable background;
+    private final IDrawable icon;
+    private final LoadingCache<Integer, IDrawableAnimated> cachedArrows;
 
     public ForgingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 120, 60);
@@ -85,7 +87,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
     protected IDrawableAnimated getArrow(AbstractForgeRecipe recipe) {
         int cookTime = recipe.getCookTime();
         if (cookTime <= 0) {
-            cookTime = regularCookTime;
+            cookTime = 400;
         }
         return this.cachedArrows.getUnchecked(cookTime);
     }
@@ -112,57 +114,37 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, AbstractForgeRecipe recipe, IFocusGroup focuses) {
-        int offset = 0;
-        List<Ingredient> ingredients = padIngredients(recipe);
-        if (!(recipe instanceof IShapedRecipe<?>)) {
-            if (canFit(ingredients, 1, 3)) {
-                offset -= 1;
-            }
-            if (canFit(ingredients,3, 1)) {
-                offset -= 3;
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            int x = i % 3 * 18;
-            int y = i / 3 * 18;
-
-            int index = i + offset;
-            IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, x+3, y+5);
-            if (index >= 0 && index < ingredients.size()) {
-                slot.addIngredients(ingredients.get(index));
-            }
-        }
-
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem(RegistryAccess.EMPTY));
-    }
-
-    private static List<Ingredient> padIngredients(AbstractForgeRecipe recipe) {
-        if (recipe instanceof ForgeShapedRecipe shapedRecipe) {
-            List<Ingredient> result = new ArrayList<>();
-            int index = 0;
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
-                    if (x >= shapedRecipe.getWidth() || y >= shapedRecipe.getHeight() || index >= recipe.getIngredients().size()) {
-                        result.add(Ingredient.of());
-                    } else {
-                        result.add(recipe.getIngredients().get(index++));
+        builder.addSlot(RecipeIngredientRole.INPUT, 3, 5).addIngredients(recipe.getIngredients().get(0));
+        if (recipe.getIngredients().size() > 1) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 21, 5).addIngredients(recipe.getIngredients().get(1));
+            if (recipe.getIngredients().size() > 2) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 39, 5).addIngredients(recipe.getIngredients().get(2));
+                if (recipe.getIngredients().size() > 3) {
+                    builder.addSlot(RecipeIngredientRole.INPUT, 3, 23).addIngredients(recipe.getIngredients().get(3));
+                    if (recipe.getIngredients().size() > 4) {
+                        builder.addSlot(RecipeIngredientRole.INPUT, 21, 23).addIngredients(recipe.getIngredients().get(4));
+                        if (recipe.getIngredients().size() > 5) {
+                            builder.addSlot(RecipeIngredientRole.INPUT, 39, 23).addIngredients(recipe.getIngredients().get(5));
+                            if (recipe.getIngredients().size() > 6) {
+                                builder.addSlot(RecipeIngredientRole.INPUT, 3, 41).addIngredients(recipe.getIngredients().get(6));
+                                if (recipe.getIngredients().size() > 7) {
+                                    builder.addSlot(RecipeIngredientRole.INPUT, 21, 41).addIngredients(recipe.getIngredients().get(7));
+                                    if (recipe.getIngredients().size() > 8) {
+                                        builder.addSlot(RecipeIngredientRole.INPUT, 39, 41).addIngredients(recipe.getIngredients().get(8));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-            return result;
         }
-        return recipe.getIngredients();
-    }
-
-    public boolean canFit(List<Ingredient> input, int width, int height) {
-        if (input.size() > 9) return false;
-
-        for (int i = 0; i < input.size(); i++) {
-            int x = i % 3;
-            int y = i / 3;
-            if (!input.get(i).isEmpty() && (x >= width || y >= height)) return false;
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
+        if (recipe.getFuelTier() > 0) {
+            List<ItemStack> fuels = ForgeFuelManager.getFuelsForTier(recipe.getFuelTier());
+            if (!fuels.isEmpty()) {
+                builder.addSlot(RecipeIngredientRole.CATALYST, 64, 40).addItemStacks(fuels);
+            }
         }
-        return true;
     }
 }

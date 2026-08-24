@@ -1,22 +1,28 @@
 package com.baisylia.modestmining;
 
-import com.baisylia.modestmining.block.client.ChiselableBlockEntityRenderer;
-import com.baisylia.modestmining.recipe.ModRecipeCategories;
-import com.mojang.logging.LogUtils;
+import com.baisylia.modestmining.attribute.ModAttributes;
 import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.block.entity.ModBlockEntities;
-import com.baisylia.modestmining.effect.ModEffects;
+import com.baisylia.modestmining.config.ModConditions;
+import com.baisylia.modestmining.config.ModConfig;
 import com.baisylia.modestmining.entity.ModEntityTypes;
-import com.baisylia.modestmining.entity.client.ClamRenderer;
+import com.baisylia.modestmining.integration.farmersdelight.FarmersDelightCompat;
 import com.baisylia.modestmining.item.ModItems;
+import com.baisylia.modestmining.recipe.ForgeFuelManager;
+import com.baisylia.modestmining.recipe.FurnaceFuelManager;
+import com.baisylia.modestmining.recipe.ModRecipeCategories;
 import com.baisylia.modestmining.recipe.ModRecipes;
 import com.baisylia.modestmining.screen.ForgeScreen;
+import com.baisylia.modestmining.screen.MillstoneScreen;
 import com.baisylia.modestmining.screen.ModMenuTypes;
 import com.baisylia.modestmining.sounds.ModSounds;
 import com.baisylia.modestmining.world.feature.ModConfiguredFeatures;
+import com.baisylia.modestmining.world.feature.ModFeatures;
 import com.baisylia.modestmining.world.feature.ModPlacedFeatures;
+import com.baisylia.modestmining.world.feature.ModPlacementModifiers;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,161 +30,63 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.locating.IModFile;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.resource.PathPackResources;
 import org.slf4j.Logger;
-import software.bernie.geckolib.GeckoLib;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.function.Supplier;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModestMining.MOD_ID)
-public class ModestMining
-{
+public class ModestMining {
     public static final String MOD_ID = "modestmining";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final RecipeBookType FORGING_RECIPE_BOOK_TYPE = RecipeBookType.create("FORGING");
+    public static final RecipeBookType MILLING_RECIPE_BOOK_TYPE = RecipeBookType.create("MILLING");
 
-    public ModestMining()
-    {
+    public ModestMining() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::addPackFinders);
         eventBus.addListener(this::creativeTabSetup);
 
-        ModEffects.register(eventBus);
+        ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC, "modestmining-common.toml");
+        ModConditions.register(eventBus);
+
+        ModAttributes.register(eventBus);
         ModItems.register(eventBus);
+        FarmersDelightCompat.register(eventBus);
         ModBlocks.register(eventBus);
         ModBlockEntities.register(eventBus);
+        ModConfiguredFeatures.register(eventBus);
+        ModPlacedFeatures.register(eventBus);
+        ModPlacementModifiers.register(eventBus);
+        ModFeatures.register(eventBus);
         ModMenuTypes.register(eventBus);
         ModRecipes.register(eventBus);
         ModEntityTypes.register(eventBus);
-        GeckoLib.initialize();
         ModSounds.SOUND_EVENTS.register(eventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
-
-    }
-
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-        SpawnPlacements.register(ModEntityTypes.CLAM.get(),
-                SpawnPlacements.Type.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
-                WaterAnimal::checkMobSpawnRules);
-    }
-
-    private void creativeTabSetup(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)) {
-            event.accept(ModItems.COKE);
-            event.accept(ModItems.COAL_CHUNK);
-            event.accept(ModItems.CHARCOAL_CHUNK);
-            event.accept(ModItems.COKE_CHUNK);
-            event.accept(ModItems.COPPER_NUGGET);
-            event.accept(ModItems.DIAMOND_SHARD);
-            event.accept(ModItems.PRISMARITE_NUGGET);
-            event.accept(ModItems.COPPER_SCREW);
-//            event.accept(ModItems.SHELL);
-            event.accept(ModItems.PEARL);
-            event.accept(ModItems.FLESH);
-            event.accept(ModItems.AMETHYST);
-            event.accept(ModItems.COPPER_DUST);
-            event.accept(ModItems.GOLD_DUST);
-            event.accept(ModItems.IRON_DUST);
-            event.accept(ModItems.DEBRIS_DUST);
-
-        }
-        else if (event.getTabKey().equals(CreativeModeTabs.SPAWN_EGGS)) {
-            event.accept(ModItems.CLAM_SPAWN_EGG);
-        }
-        else if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
-            event.accept(ModItems.CHISEL);
-            event.accept(ModItems.PRISMARITE_SWORD);
-            event.accept(ModItems.PRISMARITE_AXE);
-            event.accept(ModItems.PRISMARITE_PICKAXE);
-            event.accept(ModItems.PRISMARITE_SHOVEL);
-            event.accept(ModItems.PRISMARITE_HOE);
-            event.accept(ModItems.PRISMARITE_HELMET);
-            event.accept(ModItems.PRISMARITE_CHESTPLATE);
-            event.accept(ModItems.PRISMARITE_LEGGINGS);
-            event.accept(ModItems.PRISMARITE_BOOTS);
-            event.accept(ModItems.WOODEN_HAMMER);
-            event.accept(ModItems.STONE_HAMMER);
-            event.accept(ModItems.IRON_HAMMER);
-//            event.accept(ModItems.STEEL_HAMMER);
-            event.accept(ModItems.GOLDEN_HAMMER);
-
-        }
-        else if (event.getTabKey().equals(CreativeModeTabs.COMBAT)) {
-            event.accept(ModItems.PRISMARITE_SWORD);
-            event.accept(ModItems.PRISMARITE_HELMET);
-            event.accept(ModItems.PRISMARITE_CHESTPLATE);
-            event.accept(ModItems.PRISMARITE_LEGGINGS);
-            event.accept(ModItems.PRISMARITE_BOOTS);
-            event.accept(ModItems.WOODEN_GLAIVE);
-            event.accept(ModItems.STONE_GLAIVE);
-            event.accept(ModItems.IRON_GLAIVE);
-            event.accept(ModItems.GOLDEN_GLAIVE);
-            event.accept(ModItems.DIAMOND_GLAIVE);
-            event.accept(ModItems.NETHERITE_GLAIVE);
-            event.accept(ModItems.PRISMARITE_GLAIVE);
-            event.accept(ModItems.WOODEN_KATANA);
-            event.accept(ModItems.STONE_KATANA);
-            event.accept(ModItems.GOLDEN_KATANA);
-            event.accept(ModItems.IRON_KATANA);
-            event.accept(ModItems.DIAMOND_KATANA);
-            event.accept(ModItems.NETHERITE_KATANA);
-            event.accept(ModItems.PRISMARITE_KATANA);
-            event.accept(ModItems.WOODEN_MACE);
-            event.accept(ModItems.STONE_MACE);
-            event.accept(ModItems.GOLDEN_MACE);
-            event.accept(ModItems.IRON_MACE);
-            event.accept(ModItems.DIAMOND_MACE);
-            event.accept(ModItems.NETHERITE_MACE);
-            event.accept(ModItems.PRISMARITE_MACE);
-        } else if (event.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)) {
-            ModBlocks.NATURAL.forEach((block)->event.accept(block.get()));
-        } else if (event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)) {
-            ModBlocks.BUILDING_BLOCKS.forEach((block)->event.accept(block.get()));
-        }  else if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
-            ModBlocks.FUNCTIONAL.forEach((block)->event.accept(block.get()));
-        }
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-
-    }
-
-    public void addPackFinders(AddPackFindersEvent event) {
-        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            registerBuiltinResourcePack(event, Component.literal("Modest Mining Materials"), "modestmining_materials");
-        }
     }
 
     private static void registerBuiltinResourcePack(AddPackFindersEvent event, MutableComponent name, String folder) {
@@ -201,23 +109,117 @@ public class ModestMining
                         PackSource.BUILT_IN
                         ));
 
+            } catch (IOException e) {
+                ModestMining.LOGGER.error("Failed to register resource pack {}", res, e);
             }
         });
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    private static void registerConditionalResourcePack(AddPackFindersEvent event, MutableComponent name, String folder, Supplier<Boolean> condition) {
+        event.addRepositorySource((consumer, constructor) -> {
+            if (condition.get()) {
+                ResourceLocation res = new ResourceLocation(ModestMining.MOD_ID, folder);
+                IModFile file = ModList.get().getModFileById(ModestMining.MOD_ID).getFile();
+                try (PathPackResources pack = new PathPackResources(
+                        res.toString(),
+                        file.findResource("resourcepacks/" + folder))) {
+
+                    consumer.accept(constructor.create(
+                            res.toString(),
+                            name,
+                            true,
+                            () -> pack,
+                            pack.getMetadataSection(PackMetadataSection.SERIALIZER),
+                            Pack.Position.TOP,
+                            PackSource.BUILT_IN,
+                            true));
+
+                } catch (IOException e) {
+                    ModestMining.LOGGER.error("Failed to load resource pack {}", res, e);
+                }
+            }
+        });
+    }
+
+    private static void registerFeaturePack(AddPackFindersEvent event, String displayName, String folder, String featureKey) {
+        registerConditionalResourcePack(event, Component.literal(displayName), folder, () -> ModConfig.isFeatureEnabled(featureKey, false));
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+    }
+
+    @SubscribeEvent
+    public void onAddReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(ForgeFuelManager.INSTANCE);
+        event.addListener(FurnaceFuelManager.INSTANCE);
+    }
+
+    public void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            registerBuiltinResourcePack(event, Component.literal("Modest Mining Materials"), "modestmining_materials");
+
+            registerFeaturePack(event, "Modest Mining: Copper Bow Override", "copper_bow_textures", "bow_uses_copper");
+            registerFeaturePack(event, "Modest Mining: Copper Repeater Override", "copper_repeater_textures", "repeater_uses_copper");
+            registerFeaturePack(event, "Modest Mining: Copper Tripwire Hook ", "copper_tripwire_hook_textures", "tripwire_hook_uses_copper");
+            registerFeaturePack(event, "Modest Mining: Aluminium Forge Override", "aluminium_forge_textures", "forge_uses_aluminium");
+            registerFeaturePack(event, "Modest Mining: Aluminium Bucket Override", "aluminium_bucket_textures", "bucket_uses_aluminium");
+            registerFeaturePack(event, "Modest Mining: Aluminium Fishing Rod Override", "aluminium_fishing_rod_textures", "fishing_rod_uses_aluminium");
+            registerFeaturePack(event, "Modest Mining: Aluminium Cauldron Override", "aluminium_cauldron_textures", "cauldron_uses_aluminium");
+            registerFeaturePack(event, "Modest Mining: Lead Hopper Override", "lead_hopper_textures", "hopper_uses_lead");
+            registerFeaturePack(event, "Modest Mining: Lead Minecart Override", "lead_minecart_textures", "minecart_uses_lead");
+            registerFeaturePack(event, "Modest Mining: Gold Brewing Stand Override", "gold_brewing_stand_textures", "brewing_stand_uses_gold");
+            registerFeaturePack(event, "Modest Mining: Gold Comparator Override", "gold_comparator_textures", "comparator_uses_gold");
+            registerFeaturePack(event, "Modest Mining: Gold Detector Rail Override", "gold_detector_rail_textures", "detector_rail_uses_gold");
+            registerFeaturePack(event, "Modest Mining: Silver Activator Rail Override", "silver_activator_rail_textures", "activator_rail_uses_silver");
+            registerFeaturePack(event, "Modest Mining: Silver Dropper Override", "silver_dropper_textures", "dropper_uses_silver");
+            registerFeaturePack(event, "Modest Mining: Silver Note Block Override", "silver_note_block_textures", "note_block_uses_silver");
+            registerFeaturePack(event, "Modest Mining: Bronze Piston Override", "bronze_piston_textures", "piston_uses_bronze");
+            registerFeaturePack(event, "Modest Mining: Bronze Smoker Override", "bronze_smoker_textures", "smoker_uses_bronze");
+            registerFeaturePack(event, "Modest Mining: Bronze Crossbow Override", "bronze_crossbow_textures", "crossbow_uses_bronze");
+            registerFeaturePack(event, "Modest Mining: Bronze Shield Override", "bronze_shield_textures", "shield_uses_bronze");
+            registerFeaturePack(event, "Modest Mining: Steel Anvil Override", "steel_anvil_textures", "anvil_uses_steel");
+            registerFeaturePack(event, "Modest Mining: Steel Blast Furnace Override", "steel_blast_furnace_textures", "blast_furnace_uses_steel");
+            registerFeaturePack(event, "Modest Mining: Steel Stonecutter Override", "steel_stonecutter_textures", "stonecutter_uses_steel");
+            registerFeaturePack(event, "Modest Mining: Steel Flint and Steel Override", "steel_flint_and_steel_textures", "flint_and_steel_uses_steel");
+            registerFeaturePack(event, "Modest Mining: Rose Gold Daylight Detector Override", "rose_gold_daylight_detector_textures", "daylight_detector_uses_rose_gold");
+            registerFeaturePack(event, "Modest Mining: Rose Gold Observer Override", "rose_gold_observer_textures", "observer_uses_rose_gold");
+            registerFeaturePack(event, "Modest Mining: Electrum Lamp Override", "electrum_lamp_textures", "lamp_uses_electrum");
+            registerFeaturePack(event, "Modest Mining: Electrum Powered Rail Override", "electrum_powered_rail_textures", "powered_rail_uses_electrum");
+            registerFeaturePack(event, "Modest Mining: Electrum Dispenser Override", "electrum_dispenser_textures", "dispenser_uses_electrum");
+            registerFeaturePack(event, "Modest Mining: Electrum Jukebox Override", "electrum_jukebox_textures", "jukebox_uses_electrum");
+        }
+    }
+
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
-		@SubscribeEvent
-		public static void onRegisterRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
-			ModRecipeCategories.init(event);
-		}
+    public static class ClientModEvents {
+        @SubscribeEvent
+        public static void onRegisterRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
+            ModRecipeCategories.init(event);
+        }
 
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
+        public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenuTypes.FORGE_MENU.get(), ForgeScreen::new);
+            MenuScreens.register(ModMenuTypes.MILLSTONE_MENU.get(), MillstoneScreen::new);
+            event.enqueueWork(() -> {
+                List<RegistryObject<Item>> javelins = List.of(
+                        ModItems.FLINT_JAVELIN,
+                        ModItems.WOODEN_JAVELIN, ModItems.STONE_JAVELIN, ModItems.BRONZE_JAVELIN, ModItems.GOLDEN_JAVELIN,
+                        ModItems.IRON_JAVELIN, ModItems.STEEL_JAVELIN, ModItems.DIAMOND_JAVELIN, ModItems.NETHERITE_JAVELIN,
+                        ModItems.PRISMARITE_JAVELIN, ModItems.VALKYRIUM_JAVELIN
+                );
+
+                for (RegistryObject<Item> javelin : javelins) {
+                    ItemProperties.register(javelin.get(), new ResourceLocation("throwing"),
+                            (stack, level, entity, seed) ->
+                                    entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
+                    );
+                }
+            });
         }
 
         @SubscribeEvent

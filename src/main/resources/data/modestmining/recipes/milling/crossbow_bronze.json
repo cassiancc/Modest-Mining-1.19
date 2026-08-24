@@ -1,0 +1,31 @@
+{
+  "conditions": [
+    {
+      "type": "modestmining:config_enabled",
+      "feature": "crossbow_uses_bronze"
+    }
+  ],
+  "type": "modestmining:milling",
+  "category": "tools",
+  "ingredients": [
+    { "item": "minecraft:crossbow" }
+  ],
+  "results": [
+    {
+      "item": "minecraft:stick",
+      "count": 3,
+      "chance": 1.0
+    },
+    {
+      "item": "minecraft:string",
+      "count": 1,
+      "chance": 1.0
+    },
+    {
+      "item": "modestmining:bronze_ingot",
+      "count": 1,
+      "chance": 1.0
+    }
+  ],
+  "cooktime": 200
+}

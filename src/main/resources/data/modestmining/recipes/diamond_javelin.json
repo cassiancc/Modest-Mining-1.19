@@ -1,0 +1,24 @@
+{
+  "type": "modestmining:forging_shaped",
+  "category": "equipment",
+  "cooktime": 144,
+  "key": {
+    "X": {
+      "item": "minecraft:stick"
+    },
+    "#": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    " ##",
+    " X#",
+    "X  "
+  ],
+  "fuel": {
+    "tag": "modestmining:forge_fuels_tier_1"
+  },
+  "result": {
+    "item": "modestmining:diamond_javelin"
+  }
+}

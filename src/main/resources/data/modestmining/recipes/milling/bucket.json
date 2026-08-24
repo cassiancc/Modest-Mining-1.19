@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "modestmining:config_enabled",
+      "feature": "not_bucket_uses_aluminium"
+    }
+  ],
+  "type": "modestmining:milling",
+  "category": "tools",
+  "ingredients": [
+    { "item": "minecraft:bucket" }
+  ],
+  "results": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1,
+      "chance": 1.0
+    },
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 4,
+      "chance": 1.0
+    }
+  ],
+  "cooktime": 200
+}

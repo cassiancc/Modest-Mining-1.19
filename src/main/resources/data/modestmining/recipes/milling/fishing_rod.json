@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "modestmining:config_enabled",
+      "feature": "not_fishing_rod_uses_aluminium"
+    }
+  ],
+  "type": "modestmining:milling",
+  "category": "tools",
+  "ingredients": [
+    { "item": "minecraft:fishing_rod" }
+  ],
+  "results": [
+    {
+      "item": "minecraft:stick",
+      "count": 1,
+      "chance": 1.0
+    },
+    {
+      "item": "minecraft:string",
+      "count": 1,
+      "chance": 1.0
+    }
+  ],
+  "cooktime": 200
+}

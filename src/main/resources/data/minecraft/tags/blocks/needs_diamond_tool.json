@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "modestmining:prismarite_block"
+    "modestmining:prismarite_block",
+    "modestmining:valkyrium_block",
+    "modestmining:meteorite"
   ]
 }

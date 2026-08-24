@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "modestmining:config_enabled",
+      "feature": "not_shield_uses_bronze"
+    }
+  ],
+  "type": "modestmining:milling",
+  "category": "tools",
+  "ingredients": [
+    { "item": "minecraft:shield" }
+  ],
+  "results": [
+    {
+      "item": "minecraft:stick",
+      "count": 6,
+      "chance": 1.0
+    },
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 4,
+      "chance": 1.0
+    }
+  ],
+  "cooktime": 200
+}

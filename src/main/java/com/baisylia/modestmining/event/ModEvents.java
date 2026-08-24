@@ -1,25 +1,47 @@
 package com.baisylia.modestmining.event;
 
 import com.baisylia.modestmining.ModestMining;
+import com.baisylia.modestmining.attribute.ModAttributes;
+import com.baisylia.modestmining.block.entity.ModBlockEntities;
+import com.baisylia.modestmining.block.renderer.MillstoneRenderer;
 import com.baisylia.modestmining.entity.ModEntityTypes;
-import com.baisylia.modestmining.entity.custom.ClamEntity;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import com.baisylia.modestmining.entity.renderer.ThrownJavelinRenderer;
+import com.baisylia.modestmining.integration.ItemObliteratorCompat;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod.EventBusSubscriber(modid = ModestMining.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEvents {
 
-    //@SubscribeEvent
-    //public static void registerRecipeTypes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-    //    Registry.register(Registry.RECIPE_TYPE, ForgeRecipe.Type.ID, ForgeRecipe.Type.INSTANCE);
-    //}
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(
+                ModBlockEntities.MILLSTONE_BLOCK_ENTITY.get(),
+                MillstoneRenderer::new
+        );
+
+        EntityRenderers.register(
+                ModEntityTypes.THROWN_JAVELIN.get(),
+                ThrownJavelinRenderer::new
+        );
+    }
 
     @Mod.EventBusSubscriber(modid = ModestMining.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ModEventBusEvents {
+
         @SubscribeEvent
-        public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
-            event.put(ModEntityTypes.CLAM.get(), ClamEntity.setAttributes());
+        public static void onCommonSetup(FMLCommonSetupEvent event) {
+            event.enqueueWork(ItemObliteratorCompat::applyBlacklist);
+        }
+
+        @SubscribeEvent
+        public static void entityAttributeModificationEvent(EntityAttributeModificationEvent event) {
+            event.add(EntityType.PLAYER, ModAttributes.MAGIC_RESISTANCE.get());
         }
     }
 }
