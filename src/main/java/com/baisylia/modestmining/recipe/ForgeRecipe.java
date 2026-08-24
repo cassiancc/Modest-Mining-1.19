@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -116,7 +118,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
                         }
                         ResourceLocation itemId = ResourceLocation.tryParse(fuelStr);
                         if (itemId != null) {
-                            Item item = Registry.ITEM.get(itemId);
+                            Item item = BuiltInRegistries.ITEM.get(itemId);
                             if (item != Items.AIR) {
                                 int tier = ForgeFuelManager.getFuelTier(new ItemStack(item));
                                 if (tier >= 0) return tier;
@@ -132,7 +134,7 @@ public class ForgeRecipe extends AbstractForgeRecipe {
                     if (fuelObj.has("item")) {
                         ResourceLocation itemId = ResourceLocation.tryParse(GsonHelper.getAsString(fuelObj, "item"));
                         if (itemId != null) {
-                            Item item = Registry.ITEM.get(itemId);
+                            Item item = BuiltInRegistries.ITEM.get(itemId);
                             if (item != Items.AIR) {
                                 int tier = ForgeFuelManager.getFuelTier(new ItemStack(item));
                                 if (tier >= 0) return tier;

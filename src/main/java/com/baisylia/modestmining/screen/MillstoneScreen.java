@@ -3,6 +3,7 @@ package com.baisylia.modestmining.screen;
 import com.baisylia.modestmining.ModestMining;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -48,20 +49,20 @@ public class MillstoneScreen extends AbstractContainerScreen<MillstoneMenu> impl
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float pPartialTick, int pMouseX, int pMouseY) {
+    protected void renderBg(GuiGraphics poseStack, float pPartialTick, int pMouseX, int pMouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = this.leftPos;
         int y = this.topPos;
 
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+        poseStack.blit(TEXTURE,x, y, 0, 0, imageWidth, imageHeight);
 
         if (menu.isCrafting()) {
-            blit(poseStack, x + 61, y + 36, 176, 14, menu.getScaledProgress(), 17);
+            poseStack.blit(TEXTURE, x + 61, y + 36, 176, 14, menu.getScaledProgress(), 17);
         }
         if (menu.isFueled()) {
-            blit(poseStack, x + 61, y + 55, 201, 14, 24, 17);
+            poseStack.blit(TEXTURE,x + 61, y + 55, 201, 14, 24, 17);
         }
     }
 
@@ -72,7 +73,7 @@ public class MillstoneScreen extends AbstractContainerScreen<MillstoneMenu> impl
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics poseStack, int mouseX, int mouseY, float delta) {
         this.renderBackground(poseStack);
 
         if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
@@ -97,14 +98,14 @@ public class MillstoneScreen extends AbstractContainerScreen<MillstoneMenu> impl
                 tooltip.add(Component.translatable("tooltip.modestmining.millstone.not_powered"));
             }
 
-            renderComponentTooltip(poseStack, tooltip, mouseX, mouseY);
+            poseStack.renderComponentTooltip(font, tooltip, mouseX, mouseY);
         }
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
-        this.font.draw(poseStack, this.playerInventoryTitle, 8, (this.imageHeight - 96 + 2), 4210752);
+        poseStack.drawString(font, this.playerInventoryTitle, 8, (this.imageHeight - 96 + 2), 4210752);
     }
 
     @Override

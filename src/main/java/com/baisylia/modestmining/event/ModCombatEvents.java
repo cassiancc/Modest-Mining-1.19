@@ -2,6 +2,7 @@ package com.baisylia.modestmining.event;
 
 import com.baisylia.modestmining.ModestMining;
 import com.baisylia.modestmining.attribute.ModAttributes;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -13,7 +14,7 @@ public class ModCombatEvents {
 
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
-        if (!event.getSource().isMagic()) {
+        if (!event.getSource().is(DamageTypes.MAGIC) && !event.getSource().is(DamageTypes.INDIRECT_MAGIC)) {
             return;
         }
 

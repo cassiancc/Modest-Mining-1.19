@@ -1,5 +1,11 @@
 {
   "type": "modestmining:milling",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "modestmagic"
+    }
+  ],
   "category": "misc",
   "ingredients": [
     { "item": "minecraft:nether_star" }

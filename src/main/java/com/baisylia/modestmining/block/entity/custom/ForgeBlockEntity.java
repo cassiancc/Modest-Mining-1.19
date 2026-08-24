@@ -134,7 +134,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
         Optional<AbstractForgeRecipe> recipeMatch = entity.quickCheck.getRecipeFor(inventory, level);
 
         if (recipeMatch.isPresent()) {
-            ItemStack result = recipeMatch.get().getResultItem();
+            ItemStack result = recipeMatch.get().getResultItem(level.registryAccess());
             if (canInsertAmountIntoOutputSlot(inventory, result)) {
                 entity.currentRecipe = recipeMatch.get();
                 return startCraftIfFueled(entity, pos, level, recipeMatch.get().getCookTime());
@@ -193,6 +193,7 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
     }
 
     private static void craftItem(ForgeBlockEntity entity) {
+        var level = entity.level;
 
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
@@ -215,10 +216,10 @@ public class ForgeBlockEntity extends BlockEntity implements MenuProvider, World
             for (int i = 0; i < 9; ++i) {
                 entity.itemHandler.extractItem(i, 1, false);
             }
-            inventory.getItem(10).is(currentRecipe.getResultItem().getItem());
+            inventory.getItem(10).is(currentRecipe.getResultItem(level.registryAccess()).getItem());
 
-            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem())));
+            entity.itemHandler.setStackInSlot(10, new ItemStack(currentRecipe.getResultItem(level.registryAccess()).getItem(),
+                    entity.itemHandler.getStackInSlot(10).getCount() + entity.getTheCount(currentRecipe.getResultItem(level.registryAccess()))));
 
             entity.resetProgress();
 

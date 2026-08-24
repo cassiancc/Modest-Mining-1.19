@@ -1,0 +1,31 @@
+{
+  "feature": "modestmining:silver_ore_extra",
+  "placement": [
+    {
+      "type": "modestmining:config_filter",
+      "config_key": "generate_silver_ore"
+    },
+    {
+      "type": "minecraft:count",
+      "count": 20
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 192
+        },
+        "min_inclusive": {
+          "absolute": 32
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

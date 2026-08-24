@@ -4,7 +4,7 @@ import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.block.custom.MillstoneBlock;
 import com.baisylia.modestmining.block.entity.custom.MillstoneBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -28,7 +28,7 @@ public class MillstoneRenderer implements BlockEntityRenderer<MillstoneBlockEnti
 
         float rotation = (millstone.getLevel().getGameTime() + partialTick) * 4f;
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         poseStack.translate(-0.5D, 0.0D, -0.5D);
 
         BlockRenderDispatcher renderer = Minecraft.getInstance().getBlockRenderer();

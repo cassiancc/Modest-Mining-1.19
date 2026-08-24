@@ -3,6 +3,7 @@ package com.baisylia.modestmining.integration.jei;
 import com.baisylia.modestmining.ModestMining;
 import com.baisylia.modestmining.block.ModBlocks;
 import com.baisylia.modestmining.recipe.AbstractForgeRecipe;
+import com.baisylia.modestmining.recipe.ForgeFuelManager;
 import com.baisylia.modestmining.recipe.ForgeShapedRecipe;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -139,7 +140,7 @@ public class ForgingRecipeCategory implements IRecipeCategory<AbstractForgeRecip
                 }
             }
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 97, 6).addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
         if (recipe.getFuelTier() > 0) {
             List<ItemStack> fuels = ForgeFuelManager.getFuelsForTier(recipe.getFuelTier());
             if (!fuels.isEmpty()) {

@@ -135,31 +135,31 @@ public class JavelinAttackGoal extends Goal {
             if (ModConfig.SPEC.isLoaded() && !ModConfig.ZOMBIES_THROW_JAVELINS.get()) {
                 return;
             }
-            ThrownJavelinEntity javelin = new ThrownJavelinEntity(this.mob.getLevel(), this.mob, heldStack.copy());
+            ThrownJavelinEntity javelin = new ThrownJavelinEntity(this.mob.level(), this.mob, heldStack.copy());
             javelin.setBaseDamage(javelinItem.getThrowDamage(heldStack));
             double dx = target.getX() - this.mob.getX();
             double dy = target.getY(0.3333333333333333D) - javelin.getY();
             double dz = target.getZ() - this.mob.getZ();
             double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
-            javelin.shoot(dx, dy + horizontalDistance * (double) 0.2F, dz, 1.6F, (float) (14 - this.mob.getLevel().getDifficulty().getId() * 4));
+            javelin.shoot(dx, dy + horizontalDistance * (double) 0.2F, dz, 1.6F, (float) (14 - this.mob.level().getDifficulty().getId() * 4));
             SoundEvent throwSound = (javelinItem.getTier() == Tiers.WOOD || javelinItem.getTier() == Tiers.STONE || javelinItem.getTier() == ModTiers.FLINT)
                     ? ModSounds.JAVELIN_THROW_CRUDE.get()
                     : ModSounds.JAVELIN_THROW.get();
             this.mob.playSound(throwSound, 1.0F, 1.0F / (this.mob.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.mob.getLevel().addFreshEntity(javelin);
+            this.mob.level().addFreshEntity(javelin);
         } else if (heldStack.is(Items.TRIDENT) || heldStack.getItem() instanceof TridentItem) {
             if (ModConfig.SPEC.isLoaded() && !ModConfig.ZOMBIES_THROW_TRIDENTS.get()) {
                 return;
             }
-            ThrownTrident trident = new ThrownTrident(this.mob.getLevel(), this.mob, heldStack.copy());
+            ThrownTrident trident = new ThrownTrident(this.mob.level(), this.mob, heldStack.copy());
             trident.pickup = AbstractArrow.Pickup.DISALLOWED;
             double dx = target.getX() - this.mob.getX();
             double dy = target.getY(0.3333333333333333D) - trident.getY();
             double dz = target.getZ() - this.mob.getZ();
             double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
-            trident.shoot(dx, dy + horizontalDistance * (double) 0.2F, dz, 1.6F, (float) (14 - this.mob.getLevel().getDifficulty().getId() * 4));
+            trident.shoot(dx, dy + horizontalDistance * (double) 0.2F, dz, 1.6F, (float) (14 - this.mob.level().getDifficulty().getId() * 4));
             this.mob.playSound(SoundEvents.DROWNED_SHOOT, 1.0F, 1.0F / (this.mob.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.mob.getLevel().addFreshEntity(trident);
+            this.mob.level().addFreshEntity(trident);
         }
     }
 }

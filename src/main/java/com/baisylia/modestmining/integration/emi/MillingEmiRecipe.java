@@ -9,6 +9,7 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,7 @@ public class MillingEmiRecipe implements EmiRecipe {
                 outs.add(stack);
             }
         } else {
-            outs.add(EmiStack.of(recipe.getResultItem()));
+            outs.add(EmiStack.of(recipe.getResultItem(Minecraft.getInstance().level.registryAccess())));
         }
         this.outputs = outs;
     }

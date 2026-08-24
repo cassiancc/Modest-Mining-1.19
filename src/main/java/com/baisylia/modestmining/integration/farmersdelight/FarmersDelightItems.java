@@ -16,19 +16,19 @@ public class FarmersDelightItems {
 
     public static final RegistryObject<Item> BRONZE_KNIFE = ITEMS.register("bronze_knife",
             () -> new KnifeItem(ModTiers.BRONZE, 0.5F, -2.0F,
-                    new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+                    new Item.Properties()));
 
     public static final RegistryObject<Item> STEEL_KNIFE = ITEMS.register("steel_knife",
             () -> new KnifeItem(ModTiers.STEEL, 0.5F, -2.0F,
-                    new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+                    new Item.Properties()));
 
     public static final RegistryObject<Item> PRISMARITE_KNIFE = ITEMS.register("prismarite_knife",
             () -> new KnifeItem(ModTiers.PRISMARITE, 0.5F, -2.0F,
-                    new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+                    new Item.Properties()));
 
     public static final RegistryObject<Item> VALKYRIUM_KNIFE = ITEMS.register("valkyrium_knife",
             () -> new KnifeItem(ModTiers.VALKYRIUM, 0.5F, -2.0F,
-                    new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+                    new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

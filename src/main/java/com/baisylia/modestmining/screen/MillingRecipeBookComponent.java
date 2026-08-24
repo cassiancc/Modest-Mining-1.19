@@ -1,6 +1,7 @@
 package com.baisylia.modestmining.screen;
 
 import com.baisylia.modestmining.ModestMining;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ public class MillingRecipeBookComponent extends RecipeBookComponent {
 
 	@Override
 	public void setupGhostRecipe(Recipe<?> recipe, @NotNull List<Slot> slots) {
-		ItemStack result = recipe.getResultItem();
+		ItemStack result = recipe.getResultItem(Minecraft.getInstance().level.registryAccess());
 		this.ghostRecipe.setRecipe(recipe);
 		Slot resultSlot = slots.get(10);
 		this.ghostRecipe.addIngredient(Ingredient.of(result), resultSlot.x, resultSlot.y);

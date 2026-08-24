@@ -6,7 +6,7 @@ import com.baisylia.modestmining.block.entity.ModBlockEntities;
 import com.baisylia.modestmining.block.renderer.MillstoneRenderer;
 import com.baisylia.modestmining.entity.ModEntityTypes;
 import com.baisylia.modestmining.entity.renderer.ThrownJavelinRenderer;
-import com.baisylia.modestmining.integration.ItemObliteratorCompat;
+import com.baisylia.modestmining.integration.ReliableRemoverCompat;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -36,7 +36,7 @@ public class ModEvents {
 
         @SubscribeEvent
         public static void onCommonSetup(FMLCommonSetupEvent event) {
-            event.enqueueWork(ItemObliteratorCompat::applyBlacklist);
+            event.enqueueWork(ReliableRemoverCompat::applyBlacklist);
         }
 
         @SubscribeEvent

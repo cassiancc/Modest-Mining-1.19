@@ -23,7 +23,7 @@ public class TridentItemMixin {
         if (entity instanceof ThrownTrident thrownTrident) {
             if (!ModConfig.SPEC.isLoaded() || ModConfig.ENHANCED_TRIDENTS.get()) {
                 if (thrownTrident.getOwner() instanceof Player player) {
-                    if ((player.fallDistance > 0.0F && !player.isOnGround()) || player.isSprinting()) {
+                    if ((player.fallDistance > 0.0F && !player.onGround()) || player.isSprinting()) {
                         thrownTrident.setCritArrow(true);
                     }
                 }

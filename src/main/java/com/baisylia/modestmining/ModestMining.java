@@ -6,6 +6,7 @@ import com.baisylia.modestmining.block.entity.ModBlockEntities;
 import com.baisylia.modestmining.config.ModConditions;
 import com.baisylia.modestmining.config.ModConfig;
 import com.baisylia.modestmining.entity.ModEntityTypes;
+import com.baisylia.modestmining.event.ModCreativeTabEvents;
 import com.baisylia.modestmining.integration.farmersdelight.FarmersDelightCompat;
 import com.baisylia.modestmining.item.ModItems;
 import com.baisylia.modestmining.recipe.ForgeFuelManager;
@@ -30,6 +31,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -67,7 +69,7 @@ public class ModestMining {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::addPackFinders);
-        eventBus.addListener(this::creativeTabSetup);
+        eventBus.addListener(ModCreativeTabEvents::buildCreativeTabContents);
 
         ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.SPEC, "modestmining-common.toml");
         ModConditions.register(eventBus);
@@ -77,8 +79,6 @@ public class ModestMining {
         FarmersDelightCompat.register(eventBus);
         ModBlocks.register(eventBus);
         ModBlockEntities.register(eventBus);
-        ModConfiguredFeatures.register(eventBus);
-        ModPlacedFeatures.register(eventBus);
         ModPlacementModifiers.register(eventBus);
         ModFeatures.register(eventBus);
         ModMenuTypes.register(eventBus);
@@ -109,32 +109,36 @@ public class ModestMining {
                         PackSource.BUILT_IN
                         ));
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 ModestMining.LOGGER.error("Failed to register resource pack {}", res, e);
             }
         });
     }
 
     private static void registerConditionalResourcePack(AddPackFindersEvent event, MutableComponent name, String folder, Supplier<Boolean> condition) {
-        event.addRepositorySource((consumer, constructor) -> {
+        event.addRepositorySource((consumer) -> {
             if (condition.get()) {
                 ResourceLocation res = new ResourceLocation(ModestMining.MOD_ID, folder);
                 IModFile file = ModList.get().getModFileById(ModestMining.MOD_ID).getFile();
                 try (PathPackResources pack = new PathPackResources(
                         res.toString(),
+                        true,
                         file.findResource("resourcepacks/" + folder))) {
 
-                    consumer.accept(constructor.create(
+                    consumer.accept(Pack.create(
                             res.toString(),
                             name,
-                            true,
-                            () -> pack,
-                            pack.getMetadataSection(PackMetadataSection.SERIALIZER),
+                            false,
+                            (p)-> pack,
+                            new Pack.Info(Component.literal("Updated textures for the vanilla metals and tools"), 9, FeatureFlagSet.of()),
+                            PackType.CLIENT_RESOURCES,
                             Pack.Position.TOP,
-                            PackSource.BUILT_IN,
-                            true));
+                            false,
+                            PackSource.BUILT_IN
+                    ));
 
-                } catch (IOException e) {
+
+                } catch (Exception e) {
                     ModestMining.LOGGER.error("Failed to load resource pack {}", res, e);
                 }
             }
@@ -220,13 +224,6 @@ public class ModestMining {
                     );
                 }
             });
-        }
-
-        @SubscribeEvent
-        public static void onEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
-        {
-            event.registerEntityRenderer(ModEntityTypes.CLAM.get(), ClamRenderer::new);
-            event.registerBlockEntityRenderer(ModBlockEntities.CHISELABLE_BLOCK_ENTITY.get(), ChiselableBlockEntityRenderer::new);
         }
     }
 }

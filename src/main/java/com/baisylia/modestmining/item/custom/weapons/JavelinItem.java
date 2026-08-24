@@ -54,7 +54,7 @@ public class JavelinItem extends Item implements Vanishable {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeed, AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(ATTACK_RANGE_MODIFIER, "Weapon modifier", reach, AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(ATTACK_RANGE_MODIFIER, "Weapon modifier", reach, AttributeModifier.Operation.ADDITION));
 
         this.defaultModifiers = builder.build();
     }
@@ -184,7 +184,7 @@ public class JavelinItem extends Item implements Vanishable {
                         if (riptideLevel == 0) {
                             ThrownJavelinEntity javelin = new ThrownJavelinEntity(pLevel, player, pStack);
                             javelin.setBaseDamage(this.getThrowDamage(pStack));
-                            if ((player.fallDistance > 0.0F && !player.isOnGround()) || player.isSprinting()) {
+                            if ((player.fallDistance > 0.0F && !player.onGround()) || player.isSprinting()) {
                                 javelin.setCritArrow(true);
                             }
                             javelin.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 1.0F);
@@ -215,7 +215,7 @@ public class JavelinItem extends Item implements Vanishable {
                         f3 *= f5 / f4;
                         player.push(f1, f2, f3);
                         player.startAutoSpinAttack(20);
-                        if (player.isOnGround()) {
+                        if (player.onGround()) {
                             float f6 = 1.1999999F;
                             player.move(MoverType.SELF, new Vec3(0.0D, f6, 0.0D));
                         }

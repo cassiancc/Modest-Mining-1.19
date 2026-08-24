@@ -93,7 +93,7 @@ public class ThrownJavelinEntity extends AbstractArrow {
         int loyaltyLevel = this.entityData.get(DATA_LOYALTY);
         if (loyaltyLevel > 0 && (this.dealtDamage || this.isNoPhysics()) && owner != null) {
             if (!this.isAcceptableReturnOwner()) {
-                if (!this.level.isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
+                if (!this.level().isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
                 this.discard();
@@ -101,7 +101,7 @@ public class ThrownJavelinEntity extends AbstractArrow {
                 this.setNoPhysics(true);
                 Vec3 vec3 = owner.getEyePosition().subtract(this.position());
                 this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015D * (double) loyaltyLevel, this.getZ());
-                if (this.level.isClientSide) {
+                if (this.level().isClientSide) {
                     this.yOld = this.getY();
                 }
 
@@ -145,7 +145,7 @@ public class ThrownJavelinEntity extends AbstractArrow {
         }
 
         Entity owner = this.getOwner();
-        DamageSource damagesource = DamageSource.trident(this, owner == null ? this : owner);
+        DamageSource damagesource = owner.damageSources().trident(this, owner == null ? this : owner);
         this.dealtDamage = true;
         SoundEvent soundevent = this.isCritArrow() ? ModSounds.CRITICAL_PIERCE.get() : ModSounds.JAVELIN_HIT.get();
         if (entity.hurt(damagesource, f)) {
@@ -165,14 +165,14 @@ public class ThrownJavelinEntity extends AbstractArrow {
 
         this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D));
         float soundVolume = 1.0F;
-        if (this.level.isThundering() && this.isChanneling()) {
+        if (this.level().isThundering() && this.isChanneling()) {
             BlockPos blockpos = entity.blockPosition();
-            if (this.level.canSeeSky(blockpos)) {
-                LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(this.level);
+            if (this.level().canSeeSky(blockpos)) {
+                LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(this.level());
                 if (lightningbolt != null) {
                     lightningbolt.moveTo(Vec3.atBottomCenterOf(blockpos));
                     lightningbolt.setCause(owner instanceof ServerPlayer serverPlayer ? serverPlayer : null);
-                    this.level.addFreshEntity(lightningbolt);
+                    this.level().addFreshEntity(lightningbolt);
                     soundevent = SoundEvents.TRIDENT_THUNDER;
                     soundVolume = 5.0F;
                 }

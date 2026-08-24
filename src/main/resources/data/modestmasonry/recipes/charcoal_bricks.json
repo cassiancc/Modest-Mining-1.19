@@ -1,6 +1,12 @@
 {
   "type": "modestmining:forging",
   "cooktime": 144,
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "modestmasonry"
+    }
+  ],
   "ingredients": [
     {
       "item": "minecraft:clay_ball"

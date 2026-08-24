@@ -1,6 +1,7 @@
 package com.baisylia.modestmining.recipe;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public abstract class AbstractMillstoneRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return output.copy();
     }
 

@@ -135,7 +135,7 @@ public class MillstoneBlockEntity extends BlockEntity implements MenuProvider, W
 
     private static boolean canInsertAllOutputs(MillstoneBlockEntity entity, AbstractMillstoneRecipe recipe) {
         if (!(recipe instanceof MillstoneRecipe millstoneRecipe)) {
-            return canInsertStack(entity, recipe.getResultItem());
+            return canInsertStack(entity, recipe.getResultItem(entity.level.registryAccess()));
         }
         for (ItemStack result : millstoneRecipe.results) {
             if (!result.isEmpty() && !canInsertStack(entity, result)) return false;

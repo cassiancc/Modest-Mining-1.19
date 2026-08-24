@@ -1,0 +1,84 @@
+package com.baisylia.modestmining.integration;
+
+import com.baisylia.modestmining.ModestMining;
+import com.baisylia.modestmining.config.ModConfig;
+import com.evandev.reliable_remover.api.ReliableRemoverAPI;
+import net.minecraftforge.fml.loading.FMLPaths;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class ReliableRemoverCompatImpl {
+    private static final String PROVIDER_ID = "modestmining";
+
+    private static final Map<String, String> WOOD_TO_FLINT = Map.of(
+            "minecraft:wooden_sword", "modestmining:flint_blade",
+            "minecraft:wooden_axe", "modestmining:flint_hatchet",
+            "minecraft:wooden_pickaxe", "modestmining:flint_mattock",
+            "minecraft:wooden_shovel", "modestmining:flint_spade",
+            "minecraft:wooden_hoe", "modestmining:flint_hoe",
+            "modestmining:wooden_hammer", "modestmining:flint_hammer",
+            "modestmining:wooden_javelin", "modestmining:flint_javelin"
+    );
+
+    private static final Map<String, String> STONE_TO_BRONZE = Map.of(
+            "minecraft:stone_sword", "modestmining:bronze_sword",
+            "minecraft:stone_axe", "modestmining:bronze_axe",
+            "minecraft:stone_pickaxe", "modestmining:bronze_pickaxe",
+            "minecraft:stone_shovel", "modestmining:bronze_shovel",
+            "minecraft:stone_hoe", "modestmining:bronze_hoe",
+            "modestmining:stone_hammer", "modestmining:bronze_hammer",
+            "modestmining:stone_javelin", "modestmining:bronze_javelin"
+    );
+
+    private static final Map<String, String> IRON_TO_STEEL = Map.ofEntries(
+            Map.entry("minecraft:iron_sword", "modestmining:steel_sword"),
+            Map.entry("minecraft:iron_axe", "modestmining:steel_axe"),
+            Map.entry("minecraft:iron_pickaxe", "modestmining:steel_pickaxe"),
+            Map.entry("minecraft:iron_shovel", "modestmining:steel_shovel"),
+            Map.entry("minecraft:iron_hoe", "modestmining:steel_hoe"),
+            Map.entry("minecraft:iron_helmet", "modestmining:steel_helmet"),
+            Map.entry("minecraft:iron_chestplate", "modestmining:steel_chestplate"),
+            Map.entry("minecraft:iron_leggings", "modestmining:steel_leggings"),
+            Map.entry("minecraft:iron_boots", "modestmining:steel_boots"),
+            Map.entry("modestmining:iron_hammer", "modestmining:steel_hammer"),
+            Map.entry("modestmining:iron_javelin", "modestmining:steel_javelin"),
+            Map.entry("farmersdelight:iron_knife", "modestmining:steel_knife")
+    );
+
+    public static void apply() {
+        try {
+            Path legacyRulesFilePath = FMLPaths.CONFIGDIR.get().resolve("reliable_remover").resolve("modestmining.json");
+            Files.deleteIfExists(legacyRulesFilePath);
+        } catch (Exception ignored) {
+        }
+
+        Map<String, String> activeReplacements = new LinkedHashMap<>();
+        if (ModConfig.FLINT_REPLACES_WOOD.get()) {
+            activeReplacements.putAll(WOOD_TO_FLINT);
+            ModestMining.LOGGER.info("Reliable Remover Integration: enabled wood -> flint replacement rules.");
+        }
+        if (ModConfig.BRONZE_REPLACES_STONE.get()) {
+            activeReplacements.putAll(STONE_TO_BRONZE);
+            ModestMining.LOGGER.info("Reliable Remover Integration: enabled stone -> bronze replacement rules.");
+        }
+        if (ModConfig.STEEL_REPLACES_IRON.get()) {
+            activeReplacements.putAll(IRON_TO_STEEL);
+            ModestMining.LOGGER.info("Reliable Remover Integration: enabled iron -> steel replacement rules.");
+        }
+
+        try {
+            if (!activeReplacements.isEmpty()) {
+//                ReliableRemoverAPI.registerDynamicReplacements(PROVIDER_ID, activeReplacements);
+                ModestMining.LOGGER.info("Reliable Remover Integration: registered {} dynamic replacement rules.", activeReplacements.size());
+            } else {
+//                ReliableRemoverAPI.unregisterDynamicRules(PROVIDER_ID);
+                ModestMining.LOGGER.info("Reliable Remover Integration: cleared dynamic replacement rules.");
+            }
+        } catch (Throwable t) {
+            ModestMining.LOGGER.error("Reliable Remover Integration: failed to sync dynamic replacement rules", t);
+        }
+    }
+}

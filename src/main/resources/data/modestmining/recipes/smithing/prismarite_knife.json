@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:smithing",
+  "type": "minecraft:smithing_transform",
   "conditions": [
     {
       "type": "forge:mod_loaded",
@@ -11,6 +11,9 @@
   },
   "addition": {
     "item": "modestmining:prismarite_ingot"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
   },
   "result": {
     "item": "modestmining:prismarite_knife"

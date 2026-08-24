@@ -27,14 +27,14 @@ public class MillstoneMenu extends RecipeBookMenu<Container> {
     private final ContainerData data;
 
     public MillstoneMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
     }
 
     public MillstoneMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.MILLSTONE_MENU.get(), pContainerId);
         //checkContainerSize(pPlayerInventory, 10);
         blockEntity = ((MillstoneBlockEntity) entity);
-        this.level = pPlayerInventory.player.level;
+        this.level = pPlayerInventory.player.level();
         this.data = data;
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {

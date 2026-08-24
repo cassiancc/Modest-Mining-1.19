@@ -2,7 +2,7 @@ package com.baisylia.modestmining.entity.renderer;
 
 import com.baisylia.modestmining.entity.custom.ThrownJavelinEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 
 public class ThrownJavelinRenderer extends EntityRenderer<ThrownJavelinEntity> {
 
@@ -32,11 +33,11 @@ public class ThrownJavelinRenderer extends EntityRenderer<ThrownJavelinEntity> {
         poseStack.pushPose();
 
         poseStack.mulPose(
-                Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F)
+                Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F)
         );
 
         poseStack.mulPose(
-                Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) - 45.0F)
+                Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) - 45.0F)
         );
 
         poseStack.scale(2.0F, 2.0F, 1.0F);
@@ -45,11 +46,12 @@ public class ThrownJavelinRenderer extends EntityRenderer<ThrownJavelinEntity> {
 
         Minecraft.getInstance().getItemRenderer().renderStatic(
                 entity.getPickupItem(),
-                ItemTransforms.TransformType.NONE,
+                ItemDisplayContext.NONE,
                 packedLight,
                 OverlayTexture.NO_OVERLAY,
                 poseStack,
                 buffer,
+                entity.level(),
                 entity.getId()
         );
 

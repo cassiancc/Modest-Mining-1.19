@@ -1,11 +1,18 @@
 package com.baisylia.modestmining.integration.farmersdelight;
 
 import com.baisylia.modestmining.ModestMining;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 
 public class FarmersDelightCompat {
     public static final String FD_MODID = "farmersdelight";
+    public static final ResourceKey<CreativeModeTab> TAB_KEY =
+            ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(FD_MODID, FD_MODID));
+
 
     public static boolean isLoaded() {
         return ModList.get().isLoaded(FD_MODID);

@@ -8,6 +8,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -54,14 +56,14 @@ public class ForgeFuelManager extends SimpleJsonResourceReloadListener {
             ingredient = Ingredient.fromJson(json.get("ingredient"));
         } else if (json.has("item")) {
             ResourceLocation itemId = new ResourceLocation(GsonHelper.getAsString(json, "item"));
-            Item item = Registry.ITEM.get(itemId);
+            Item item = BuiltInRegistries.ITEM.get(itemId);
             if (item == Items.AIR) {
                 return;
             }
             ingredient = Ingredient.of(item);
         } else if (json.has("tag")) {
             ResourceLocation tagId = new ResourceLocation(GsonHelper.getAsString(json, "tag"));
-            TagKey<Item> tagKey = TagKey.create(Registry.ITEM_REGISTRY, tagId);
+            TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
             ingredient = Ingredient.of(tagKey);
         } else {
             return;
